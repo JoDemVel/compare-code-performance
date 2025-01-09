@@ -38,19 +38,21 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --radius: 0.5rem;
+    --badge: 0, 0%, 40%;
+    --badge-foreground: 232, 7%, 90%;
   }
   .dark {
-    --background: 210 30% 8%;
-    --foreground: 210 15% 85%;
-    --card: 210 30% 10%;
-    --card-foreground: 210 20% 90%;
-    --popover: 210 30% 10%;
+    --background: 232, 8%, 20%;
+    --foreground: 232, 7%, 80%;
+    --card: 228, 6%, 19%;
+    --card-foreground: 232, 7%, 80%;
+    --popover: 210 30% 20%;
     --popover-foreground: 210 20% 90%;
     --primary: 220 70% 50%;
     --primary-foreground: 0 0% 98%;
     --secondary: 215 25% 16%;
     --secondary-foreground: 210 20% 85%;
-    --muted: 215 20% 14%;
+    --muted: 228, 6%, 16%;
     --muted-foreground: 210 15% 60%;
     --accent: 200 50% 40%;
     --accent-foreground: 0 0% 98%;
@@ -64,6 +66,8 @@
     --chart-3: 30 80% 55%;
     --chart-4: 280 65% 60%;
     --chart-5: 340 75% 55%;
+    --badge: 0, 0%, 10%;
+    --badge-foreground: 232, 7%, 80%;
   }
 }
 
@@ -74,4 +78,11 @@
   body {
     @apply bg-background text-foreground;
   }
+}
+
+.title-overflow {
+  overflow: hidden;
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 1;
 }

@@ -3,7 +3,7 @@ import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 
 export const Editor = () => {
   return (
-    <ScrollArea className="rounded-lg border overflow-hidden border-gray-700 shadow h-[800px] w-full">
+    <ScrollArea className="rounded-lg border overflow-hidden border-gray-600 shadow h-[calc(100vh-6rem)]">
       <MonacoEditor
         className="h-[1200px] w-full"
         defaultLanguage="javascript"
