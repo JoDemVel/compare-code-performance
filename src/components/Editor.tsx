@@ -1,11 +1,11 @@
 import { Editor as MonacoEditor } from '@monaco-editor/react';
-import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 export const Editor = () => {
   return (
-    <ScrollArea className="rounded-lg border overflow-hidden border-gray-600 shadow h-[calc(100vh-6rem)]">
+    <ScrollArea className="rounded-xl overflow-visible border-gray-600 shadow h-full">
       <MonacoEditor
-        className="h-[1200px] w-full"
+        className="h-[1200px]"
         defaultLanguage="javascript"
         defaultValue="// some comment"
         theme="vs-dark"
@@ -22,9 +22,9 @@ export const Editor = () => {
             horizontalScrollbarSize: 10,
             alwaysConsumeMouseWheel: false,
           },
+          fixedOverflowWidgets: true,
         }}
       />
-      <ScrollBar></ScrollBar>
     </ScrollArea>
   );
 };

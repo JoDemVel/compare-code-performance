@@ -8,13 +8,22 @@ export const TestCaseBenchmarkSpace = () => {
   return (
     <Card className="h-full">
       <Tabs defaultValue="test-cases" className="w-full h-full">
-        <CardHeader className="sticky top-0 z-10">
-          <TabsList className="grid w-full grid-cols-2 border border-dashed border-gray-500">
-            <TabsTrigger value="test-cases">Test Cases</TabsTrigger>
-            <TabsTrigger value="benchmark">Benchmark</TabsTrigger>
-          </TabsList>
+        <CardHeader className="p-3">
+          <div className="bg-muted rounded-xl p-1">
+            <TabsList className="h-auto w-full flex flex-wrap items-center justify-start gap-2 border-2 border-dashed">
+              <TabsTrigger value="test-cases" className="flex-auto text-center">
+                Test Cases
+              </TabsTrigger>
+              <TabsTrigger value="output" className="flex-auto text-center">
+                Output
+              </TabsTrigger>
+              <TabsTrigger value="benchmark" className="flex-auto text-center">
+                Benchmark
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </CardHeader>
-        <ScrollArea className="h-[calc(100vh-13rem)] ">
+        <ScrollArea className="h-full">
           <CardContent>
             <TabsContent value="test-cases">
               <TestCaseArea />
