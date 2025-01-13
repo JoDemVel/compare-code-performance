@@ -1,8 +1,9 @@
 import { Card, CardContent, CardHeader } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { TestCaseArea } from './TestCaseArea';
-import { BenchmarkArea } from './BenchmarkArea';
+import { TestCaseArea } from '@/sections/TestCaseArea';
+import { BenchmarkArea } from '@/sections/BenchmarkArea';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { OutputArea } from '@/sections/OutputArea';
 
 export const TestCaseBenchmarkSpace = () => {
   return (
@@ -27,6 +28,9 @@ export const TestCaseBenchmarkSpace = () => {
           <CardContent>
             <TabsContent value="test-cases">
               <TestCaseArea />
+            </TabsContent>
+            <TabsContent value="output">
+              <OutputArea />
             </TabsContent>
             <TabsContent value="benchmark">
               <BenchmarkArea />

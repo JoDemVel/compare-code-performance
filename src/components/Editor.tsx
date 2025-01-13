@@ -1,7 +1,32 @@
-import { Editor as MonacoEditor } from '@monaco-editor/react';
+import React, { forwardRef } from 'react';
+import { Editor as MonacoEditor, OnMount } from '@monaco-editor/react';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import * as monaco from 'monaco-editor';
 
-export const Editor = () => {
+interface EditorProps {
+  handleRun: () => void;
+}
+
+export const Editor = forwardRef<
+  monaco.editor.IStandaloneCodeEditor,
+  EditorProps
+>(({ handleRun }, ref) => {
+  const handleEditorDidMount: OnMount = (editor, monaco) => {
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+      handleRun();
+    });
+
+    if (ref) {
+      if (typeof ref === 'function') {
+        ref(editor);
+      } else {
+        (
+          ref as React.MutableRefObject<monaco.editor.IStandaloneCodeEditor>
+        ).current = editor;
+      }
+    }
+  };
+
   return (
     <ScrollArea className="rounded-xl overflow-visible border-gray-600 shadow h-full">
       <MonacoEditor
@@ -24,7 +49,8 @@ export const Editor = () => {
           },
           fixedOverflowWidgets: true,
         }}
+        onMount={handleEditorDidMount}
       />
     </ScrollArea>
   );
-};
+});

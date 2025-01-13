@@ -1,31 +1,46 @@
 import React, { useRef, useEffect, useState } from 'react';
 
-export const CodeTextArea = () => {
-  const [value, setValue] = useState('');
+interface CodeTextAreaProps {
+  placeholder?: string;
+  value?: string;
+  editable?: boolean;
+}
+
+export const CodeTextArea = ({
+  placeholder = '',
+  value = '',
+  editable = false,
+}: CodeTextAreaProps) => {
+  const [codeValue, setCodeValue] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
-    const textarea = textareaRef.current;
-    if (textarea) {
-      textarea.style.height = 'auto';
-      textarea.style.height = `${textarea.scrollHeight}px`;
+    if (!value) {
+      const textarea = textareaRef.current;
+      if (textarea) {
+        textarea.style.height = 'auto';
+        textarea.style.height = `${textarea.scrollHeight}px`;
+      }
+    } else {
+      setCodeValue(value);
     }
-  }, [value]);
+  }, [codeValue, value]);
 
   const handleChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
-    setValue(e.target.value);
+    setCodeValue(e.target.value);
   };
 
   return (
     <textarea
       ref={textareaRef}
-      value={value}
+      value={codeValue}
+      readOnly={!editable}
       onChange={handleChange}
       spellCheck={false}
       className="w-full resize-none overflow-hidden font-mono bg-background p-2 border rounded-sm"
-      placeholder="Call the method with the test case input here..."
+      placeholder={placeholder}
     />
   );
 };
