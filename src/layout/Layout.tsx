@@ -4,6 +4,7 @@ import { TestCaseBenchmarkSpace } from '@/sections/TestCaseBenchmarkSpace';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import { useWindowSize } from '@/hooks/useWindowSize';
 import { useEffect, useRef, useState } from 'react';
+import { CodeHandlerFactory } from '@/handlers/HandlerFactory';
 
 interface PanelImperativeAPI {
   resize: (size: number) => void;
@@ -44,8 +45,8 @@ export const Layout = () => {
         direction={isSmall ? 'vertical' : 'horizontal'}
         className="p-4"
       >
-        <Panel defaultSize={75} minSize={35} ref={codePanelRef}>
-          <CodeSpace />
+        <Panel defaultSize={65} minSize={35} ref={codePanelRef}>
+          <CodeSpace factory={new CodeHandlerFactory()} />
         </Panel>
         <PanelResizeHandle className={isSmall ? 'h-px py-1' : 'w-px px-1'} />
         <Panel defaultSize={35} minSize={minTestCaseSpace}>
