@@ -6,7 +6,9 @@ interface WindowSize {
 }
 
 interface WindowProperties extends WindowSize {
-  isVertical: boolean;
+  isSmall: boolean;
+  isMedium: boolean;
+  isLarge: boolean;
 }
 
 export const useWindowSize = (): WindowProperties => {
@@ -14,7 +16,11 @@ export const useWindowSize = (): WindowProperties => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const [isVertical, setIsVertical] = useState<boolean>(window.innerWidth < 1110);
+  const [isSmall, setIsSmall] = useState<boolean>(window.innerWidth < 1110);
+  const [isMedium, setIsMedium] = useState<boolean>(
+    window.innerWidth >= 1110 && window.innerWidth < 1440
+  );
+  const [isLarge, setIsLarge] = useState<boolean>(window.innerWidth >= 1440);
 
   useEffect(() => {
     const handleResize = () => {
@@ -29,8 +35,10 @@ export const useWindowSize = (): WindowProperties => {
   }, []);
 
   useEffect(() => {
-    setIsVertical(window.innerWidth < 1110);
+    setIsSmall(windowSize.width < 1024);
+    setIsMedium(windowSize.width >= 1024 && windowSize.width < 1440);
+    setIsLarge(windowSize.width >= 1440);
   }, [windowSize.width]);
 
-  return { ...windowSize, isVertical };
+  return { ...windowSize, isSmall, isMedium, isLarge };
 };
