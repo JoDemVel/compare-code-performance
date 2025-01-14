@@ -5,6 +5,8 @@ import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import * as monaco from 'monaco-editor';
 import { HandlerFactory } from '@/handlers/HandlerFactory';
 import { CodeHandler } from '@/handlers/CodeHandler';
+import { useTestCasesStore } from '@/stores/useTestCasesStore';
+import { useLanguagesStore } from '@/stores/useLanguagesStore';
 
 export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
   const firstEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
@@ -14,22 +16,36 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
     null
   );
   const codeHandler: CodeHandler = factory.createHandler();
+  const { testCases } = useTestCasesStore();
+  const { selectedLanguage } = useLanguagesStore();
 
   const handleRun = () => {
     if (firstEditorRef.current) {
-      console.log('First editor code:', firstEditorRef.current.getValue());
-      codeHandler.handleCode({
-        code: firstEditorRef.current.getValue(),
-        language: 'javascript',
-        testCase: 'multiply(2.1, 3.3)',
+      const code = firstEditorRef.current.getValue();
+      const promises = testCases.map(async (testCase) => {
+        return await codeHandler.handleCode({
+          code: code,
+          language: selectedLanguage?.id || 'javascript',
+          testCase: testCase.testCase,
+        });
+      });
+      Promise.all(promises).then((results) => {
+        console.log('#1');
+        console.log('Results:', results);
       });
     }
     if (secondEditorRef.current) {
-      console.log('Second editor code:', secondEditorRef.current.getValue());
-      codeHandler.handleCode({
-        code: secondEditorRef.current.getValue(),
-        language: 'typescript',
-        testCase: 'multiply(2.1, 3.3)',
+      const code = secondEditorRef.current.getValue();
+      const promises = testCases.map(async (testCase) => {
+        return await codeHandler.handleCode({
+          code: code,
+          language: selectedLanguage?.id || 'javascript',
+          testCase: testCase.testCase,
+        });
+      });
+      Promise.all(promises).then((results) => {
+        console.log('#2');
+        console.log('Results:', results);
       });
     }
   };

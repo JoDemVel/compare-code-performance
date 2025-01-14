@@ -10,3 +10,16 @@ export interface Output {
   runTime: number;
   opsPerSec: number;
 }
+
+export interface TestCase {
+  id: string;
+  title: string;
+  testCase: string;
+}
+
+export interface Language {
+  id: string;
+  name: string;
+  version?: string;
+  tabSize?: number;
+}

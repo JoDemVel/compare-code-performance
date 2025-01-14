@@ -1,17 +1,18 @@
-import React, { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect } from 'react';
 
 interface CodeTextAreaProps {
   placeholder?: string;
   value?: string;
+  setValue?: React.Dispatch<React.SetStateAction<string>>;
   editable?: boolean;
 }
 
 export const CodeTextArea = ({
   placeholder = '',
-  value = '',
+  value,
+  setValue,
   editable = false,
 }: CodeTextAreaProps) => {
-  const [codeValue, setCodeValue] = useState(value);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
@@ -22,20 +23,24 @@ export const CodeTextArea = ({
         textarea.style.height = `${textarea.scrollHeight}px`;
       }
     } else {
-      setCodeValue(value);
+      if (setValue) {
+        setValue(value);
+      }
     }
-  }, [codeValue, value]);
+  }, [setValue, value]);
 
   const handleChange = (e: {
     target: { value: React.SetStateAction<string> };
   }) => {
-    setCodeValue(e.target.value);
+    if (setValue) {
+      setValue(e.target.value);
+    }
   };
 
   return (
     <textarea
       ref={textareaRef}
-      value={codeValue}
+      value={value}
       readOnly={!editable}
       onChange={handleChange}
       spellCheck={false}
