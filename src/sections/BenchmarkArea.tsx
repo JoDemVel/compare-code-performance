@@ -7,160 +7,121 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
-import React from 'react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { useMemo, useState } from 'react';
 import { TableResult } from '@/components/TableResult';
-
-const chartConfig = {
-  alg1: {
-    label: 'Algorithm 1',
-    color: 'hsl(var(--chart-1))',
-  },
-  alg2: {
-    label: 'Algorithm 2',
-    color: 'hsl(var(--chart-2))',
-  },
-} satisfies ChartConfig;
-
-const chartData = [
-  { 'test-case': 'TC-1', alg1: 186, alg2: 80 },
-  { 'test-case': 'TC-2', alg1: 305, alg2: 200 },
-  { 'test-case': 'TC-3', alg1: 237, alg2: 120 },
-  { 'test-case': 'TC-4', alg1: 73, alg2: 190 },
-  { 'test-case': 'TC-5', alg1: 209, alg2: 130 },
-  { 'test-case': 'TC-6', alg1: 214, alg2: 140 },
-  { 'test-case': 'TC-7', alg1: 254, alg2: 180 },
-  { 'test-case': 'TC-8', alg1: 196, alg2: 100 },
-  { 'test-case': 'TC-9', alg1: 178, alg2: 160 },
-  { 'test-case': 'TC-10', alg1: 256, alg2: 220 },
-];
-const initialBenchmarkResults = [
-  {
-    input: 'Case 1',
-    implementation1: 0.5,
-    implementation2: 0.8,
-  },
-  {
-    input: 'Case 2',
-    implementation1: 0.3,
-    implementation2: 0.4,
-  },
-  {
-    input: 'Case 3',
-    implementation1: 0.6,
-    implementation2: 0.7,
-  },
-  {
-    input: 'Case 4',
-    implementation1: 0.2,
-    implementation2: 0.3,
-  },
-  {
-    input: 'Case 5',
-    implementation1: 0.4,
-    implementation2: 0.5,
-  },
-  {
-    input: 'Case 6',
-    implementation1: 0.7,
-    implementation2: 0.8,
-  },
-  {
-    input: 'Case 7',
-    implementation1: 0.1,
-    implementation2: 0.2,
-  },
-  {
-    input: 'Case 8',
-    implementation1: 0.9,
-    implementation2: 1.0,
-  },
-  {
-    input: 'Case 9',
-    implementation1: 0.8,
-    implementation2: 0.9,
-  },
-  {
-    input: 'Case 10',
-    implementation1: 0.5,
-    implementation2: 0.6,
-  },
-];
+import { useResultStore } from '@/stores/useResultStore';
+import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
+import { abbreviateNumberFormatter } from '@/utils/formatters';
 
 export const BenchmarkArea = () => {
-  const [benchmarkResults, setBenchmarkResults] = React.useState(
-    initialBenchmarkResults
-  );
+  const { results } = useResultStore();
+  const [dataSelected, setDataSelected] = useState('run-time');
+  const titlesResults = useMemo(() => {
+    if (results.length === 0) return [];
+    return results[0].results.map((output) => output.editorTitle);
+  }, [results]);
+  const chartConfig = Object.fromEntries(
+    titlesResults.map((title, index) => [
+      title,
+      { label: title, color: `hsl(var(--chart-${index + 1}))` },
+    ])
+  ) as ChartConfig;
+
+  const data = useMemo(() => {
+    return results.map((result) => ({
+      'Test Case': `${result.index + 1}-${result.testCase}`,
+      ...result.results.reduce((acc: Record<string, string>, output) => {
+        acc[output.editorTitle] =
+          dataSelected === 'ops-per-sec'
+            ? String(output.output.opsPerSec)
+            : output.output.runTime.toFixed(3);
+        return acc;
+      }, {}),
+    }));
+  }, [results, dataSelected]);
 
   return (
-    <div className="flex flex-col gap-4 2xl:pb-16 xl:pb-16 lg:pb-24 md:pb-16 sm:pb-16 pb-16">
-      <h2 className="text-xl font-semibold ">Benchmark Results</h2>
-      <ChartContainer config={chartConfig}>
-        <LineChart accessibilityLayer data={chartData}>
-          <CartesianGrid
-            strokeDasharray="4 4"
-            stroke={'#c4c4c4'}
-            opacity={0.4}
-          />
-          <XAxis
-            dataKey="test-case"
-            tickMargin={10}
-            interval="preserveStartEnd"
-          />
-          <YAxis
-            label={{
-              value: 'Time (ms)',
-              angle: -90,
-              position: 'insideLeft',
-              dy: 30,
-            }}
-            domain={[0, 'auto']}
-            tickMargin={10}
-            tickFormatter={(value) => value.toFixed(0)}
-            orientation="left"
-          />
-          <ChartTooltip
-            cursor={false}
-            content={<ChartTooltipContent indicator="line" />}
-          />
-          <Line
-            dataKey="alg1"
-            type="natural"
-            fill="var(--color-alg1)"
-            fillOpacity={0.4}
-            stroke="var(--color-alg1)"
-          />
-          <Line
-            dataKey="alg2"
-            type="natural"
-            fill="var(--color-alg2)"
-            fillOpacity={0.4}
-            stroke="var(--color-alg2)"
-          />
-          <ChartLegend content={<ChartLegendContent />} />
-        </LineChart>
-      </ChartContainer>
-      {/* <div className="space-y-4">
-        <h3 className="text-lg font-semibold my-4">Detailed Results</h3>
-        <div className="grid grid-cols-3 gap-4">
-          <div className="font-medium">Input</div>
-          <div className="font-medium">Two Pointer (ms)</div>
-          <div className="font-medium">Hash Map (ms)</div>
-          {benchmarkResults.map((result, index) => (
-            <React.Fragment key={index}>
-              <div className="truncate">{result.input}</div>
-              <div>{result.implementation1.toFixed(3)}</div>
-              <div>{result.implementation2.toFixed(3)}</div>
-            </React.Fragment>
-          ))}
-        </div>
-      </div> */}
-      <div className="space-y-4">
-        <h3 className="text-lg font-semibold my-4">Detailed Results</h3>
-        <TableResult
-          data={benchmarkResults}
-          titles={['input', 'implementation1', 'implementation2']}
-        />
+    <div className="flex flex-col gap-4 justify-center items-center 2xl:pb-16 xl:pb-16 lg:pb-24 md:pb-16 sm:pb-16 pb-16">
+      <div className="flex justify-between items-center w-full">
+        <h2 className="text-xl font-semibold">Benchmark Results</h2>
+        <Select
+          value={dataSelected}
+          defaultValue="run-time"
+          onValueChange={(value) => {
+            setDataSelected(value);
+          }}
+        >
+          <SelectTrigger className="w-[130px] border-inherit border-dashed border-2 focus:ring-0">
+            <SelectValue placeholder="Theme" />
+          </SelectTrigger>
+          <SelectContent className="bg-card">
+            <SelectItem value="run-time">Run Time</SelectItem>
+            <SelectItem value="ops-per-sec">Ops. Per Sec</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
+      <ScrollArea className="w-[90%]">
+        <ChartContainer config={chartConfig}>
+          <LineChart accessibilityLayer data={data}>
+            <CartesianGrid
+              strokeDasharray="4 4"
+              stroke={'#c4c4c4'}
+              opacity={0.4}
+            />
+            <XAxis
+              dataKey="Test Case"
+              tickMargin={10}
+              interval="preserveStartEnd"
+            />
+            <YAxis
+              domain={['auto', 'auto']}
+              tickFormatter={abbreviateNumberFormatter}
+              label={{
+                value:
+                  dataSelected === 'ops-per-sec'
+                    ? 'Ops. Per Sec'
+                    : 'Run Time (ms)',
+                angle: -90,
+                position: 'insideLeft',
+                dy: 30,
+              }}
+              interval={0}
+              allowDataOverflow={true}
+            />
+            <ChartTooltip
+              cursor={false}
+              content={<ChartTooltipContent indicator="line" />}
+            />
+            {titlesResults.map((title, index) => (
+              <Line
+                key={index}
+                connectNulls
+                type="monotone"
+                dataKey={title}
+                stroke={chartConfig[title].color}
+                strokeWidth={2}
+                dot={false}
+              />
+            ))}
+            <ChartLegend content={<ChartLegendContent />} />
+          </LineChart>
+        </ChartContainer>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
+      <ScrollArea className="w-[90%]">
+        <div className="space-y-4">
+          <h3 className="text-lg font-semibold my-4">Detailed Results</h3>
+          <TableResult data={data} titles={['Test Case', ...titlesResults]} />
+        </div>
+        <ScrollBar orientation="horizontal" />
+      </ScrollArea>
     </div>
   );
 };

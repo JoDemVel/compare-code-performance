@@ -17,39 +17,41 @@ interface PanelImperativeAPI {
 }
 
 export const Layout = () => {
-  const { isSmall, isMedium, isLarge } = useWindowSize();
+  const { is2xl, isXl, isLg, isMd, isSm } = useWindowSize();
   const [minTestCaseSpace, setMinTestCaseSpace] = useState<number>(22);
   const codePanelRef = useRef<PanelImperativeAPI | null>(null);
 
   useEffect(() => {
     const codePanel = codePanelRef.current;
     if (codePanel) {
-      if (isSmall) {
-        codePanel.resize(isSmall ? 50 : 75);
-      }
-      if (isMedium) {
-        codePanel.resize(isMedium ? 70 : 75);
+      if (isSm) {
+        codePanel.resize(50);
         setMinTestCaseSpace(25);
       }
-      if (isLarge) {
+      if (isMd) {
+        codePanel.resize(65);
+        setMinTestCaseSpace(35);
+      }
+      if (isLg) {
+        codePanel.resize(68);
+        setMinTestCaseSpace(30);
+      }
+      if (isXl || is2xl) {
         codePanel.resize(75);
         setMinTestCaseSpace(20);
       }
     }
-  }, [isSmall, isMedium, isLarge]);
+  }, [is2xl, isXl, isLg, isMd, isSm]);
 
   return (
     <section className="h-screen flex flex-col bg-background text-foreground">
       <Header />
-      <PanelGroup
-        direction={isSmall ? 'vertical' : 'horizontal'}
-        className="p-4"
-      >
-        <Panel defaultSize={65} minSize={35} ref={codePanelRef}>
+      <PanelGroup direction={isSm ? 'vertical' : 'horizontal'} className="p-4">
+        <Panel minSize={35} ref={codePanelRef}>
           <CodeSpace factory={new CodeHandlerFactory()} />
         </Panel>
-        <PanelResizeHandle className={isSmall ? 'h-px py-1' : 'w-px px-1'} />
-        <Panel defaultSize={35} minSize={minTestCaseSpace}>
+        <PanelResizeHandle className={isSm ? 'h-px py-1' : 'w-px px-1'} />
+        <Panel minSize={minTestCaseSpace}>
           <TestCaseBenchmarkSpace />
         </Panel>
       </PanelGroup>

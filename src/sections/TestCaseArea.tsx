@@ -1,19 +1,22 @@
 import { TestCase } from '@/components/TestCase';
 import { Button } from '@/components/ui/button';
+import { useResultStore } from '@/stores/useResultStore';
 import { useTestCasesStore } from '@/stores/useTestCasesStore';
 import { Plus } from 'lucide-react';
 import { useCallback } from 'react';
 
 export const TestCaseArea = () => {
   const { testCases, addTestCase } = useTestCasesStore();
+  const { clearResults } = useResultStore();
 
   const handleAdd = useCallback(() => {
     addTestCase({
       id: Date.now().toString(),
-      title: 'Untitled',
+      title: 'Test Case',
       testCase: '',
     });
-  }, [addTestCase]);
+    clearResults();
+  }, [addTestCase, clearResults]);
   return (
     <div className="flex flex-col gap-4 h-full">
       <div className="flex justify-end">

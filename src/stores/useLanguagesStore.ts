@@ -9,17 +9,22 @@ export const useLanguagesStore = create(
         {
           id: 'javascript',
           name: 'JavaScript',
-          value: 'javascript',
           tabSize: 2,
+          fileExtension: 'js',
         },
         {
           id: 'typescript',
           name: 'TypeScript',
           version: '5.6.2',
-          tabSize: 4,
+          tabSize: 2,
+          fileExtension: 'ts',
         }
       ] as Language[],
-      selectedLanguage: null as Language | null
+      selectedLanguage: {
+        id: 'javascript',
+        name: 'JavaScript',
+        tabSize: 2,
+      } as Language,
     },
     (set) => ({
       setSelectedLanguage: (language: Language) =>

@@ -4,23 +4,70 @@ import { TestCaseArea } from '@/sections/TestCaseArea';
 import { BenchmarkArea } from '@/sections/BenchmarkArea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { OutputArea } from '@/sections/OutputArea';
+import { useResultStore } from '@/stores/useResultStore';
+import { useMemo, useState } from 'react';
+import { Tooltip } from 'react-tooltip';
+import { useTheme } from '@/components/theme-provider';
 
 export const TestCaseBenchmarkSpace = () => {
+  const { isEmpty } = useResultStore();
+  const [activeTab, setActiveTab] = useState<string>(
+    isEmpty ? 'test-cases' : 'benchmark'
+  );
+  const { theme } = useTheme();
+  const getVariant = useMemo(() => {
+    return theme === 'dark' ? 'light' : 'dark';
+  }, [theme]);
+
+  useResultStore.subscribe(({ isEmpty }) => {
+    if (!isEmpty) {
+      setActiveTab('benchmark');
+    }
+  });
+
   return (
     <Card className="h-full">
-      <Tabs defaultValue="test-cases" className="w-full h-full">
+      <Tabs
+        value={activeTab}
+        onValueChange={(value) => setActiveTab(value)}
+        className="w-full h-full"
+      >
         <CardHeader className="p-3">
           <div className="bg-muted rounded-xl p-1">
             <TabsList className="h-auto w-full flex flex-wrap items-center justify-start gap-2 border-2 border-dashed">
-              <TabsTrigger value="test-cases" className="flex-auto text-center">
-                Test Cases
+              <TabsTrigger
+                data-tooltip-id="test-cases-tab"
+                value="test-cases"
+                className="flex-auto text-center"
+              >
+                <span>Test Cases</span>
               </TabsTrigger>
-              <TabsTrigger value="output" className="flex-auto text-center">
-                Output
-              </TabsTrigger>
-              <TabsTrigger value="benchmark" className="flex-auto text-center">
-                Benchmark
-              </TabsTrigger>
+
+              <div
+                data-tooltip-id="output-tab"
+                className="relative flex-auto text-center"
+              >
+                <TabsTrigger
+                  value="output"
+                  className="w-full"
+                  disabled={isEmpty}
+                >
+                  <span>Output</span>
+                </TabsTrigger>
+              </div>
+
+              <div
+                data-tooltip-id="benchmark-tab"
+                className="relative flex-auto text-center"
+              >
+                <TabsTrigger
+                  value="benchmark"
+                  className="w-full"
+                  disabled={isEmpty}
+                >
+                  <span>Benchmark</span>
+                </TabsTrigger>
+              </div>
             </TabsList>
           </div>
         </CardHeader>
@@ -38,6 +85,25 @@ export const TestCaseBenchmarkSpace = () => {
           </CardContent>
         </ScrollArea>
       </Tabs>
+      {isEmpty && (
+        <>
+          <Tooltip
+            id="output-tab"
+            place="bottom"
+            variant={getVariant}
+            content="Run the test cases to see the output"
+            opacity={0.5}
+          />
+          <Tooltip
+            id="benchmark-tab"
+            place="bottom-end"
+            variant={getVariant}
+            content="Run the test cases to see the benchmark"
+            className=""
+            opacity={0.5}
+          />
+        </>
+      )}
     </Card>
   );
 };
