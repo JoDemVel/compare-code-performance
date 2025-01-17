@@ -10,3 +10,34 @@ export interface Output {
   runTime: number;
   opsPerSec: number;
 }
+
+export interface TestCase {
+  id: string;
+  title: string;
+  testCase: string;
+}
+
+export interface Language {
+  id: string;
+  name: string;
+  version?: string;
+  tabSize?: number;
+  fileExtension: string;
+}
+
+export interface EditorProperty {
+  idEditor: string;
+  title: string;
+}
+
+export interface UnitResult {
+  editorTitle: string;
+  output: Output;
+}
+
+export interface Result {
+  index: number;
+  testCaseId: string;
+  testCase: string;
+  results: UnitResult[];
+}

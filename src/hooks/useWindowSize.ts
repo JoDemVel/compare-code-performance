@@ -6,9 +6,11 @@ interface WindowSize {
 }
 
 interface WindowProperties extends WindowSize {
-  isSmall: boolean;
-  isMedium: boolean;
-  isLarge: boolean;
+  isSm: boolean;
+  isMd: boolean;
+  isLg: boolean;
+  isXl: boolean;
+  is2xl: boolean;
 }
 
 export const useWindowSize = (): WindowProperties => {
@@ -16,11 +18,11 @@ export const useWindowSize = (): WindowProperties => {
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const [isSmall, setIsSmall] = useState<boolean>(window.innerWidth < 1110);
-  const [isMedium, setIsMedium] = useState<boolean>(
-    window.innerWidth >= 1110 && window.innerWidth < 1440
-  );
-  const [isLarge, setIsLarge] = useState<boolean>(window.innerWidth >= 1440);
+  const [isSm, setIsSm] = useState<boolean>(false);
+  const [isMd, setIsMd] = useState<boolean>(false);
+  const [isLg, setIsLg] = useState<boolean>(false);
+  const [isXl, setIsXl] = useState<boolean>(false);
+  const [is2xl, setIs2xl] = useState<boolean>(false);
 
   useEffect(() => {
     const handleResize = () => {
@@ -35,10 +37,12 @@ export const useWindowSize = (): WindowProperties => {
   }, []);
 
   useEffect(() => {
-    setIsSmall(windowSize.width < 1024);
-    setIsMedium(windowSize.width >= 1024 && windowSize.width < 1440);
-    setIsLarge(windowSize.width >= 1440);
+    setIs2xl(windowSize.width >= 1440);
+    setIsXl(windowSize.width >= 1370 && windowSize.width < 1440);
+    setIsLg(windowSize.width >= 1150 && windowSize.width < 1370);
+    setIsMd(windowSize.width >= 1024 && windowSize.width < 1150);
+    setIsSm(windowSize.width < 1024);
   }, [windowSize.width]);
 
-  return { ...windowSize, isSmall, isMedium, isLarge };
+  return { ...windowSize, isSm, isMd, isLg, isXl, is2xl };
 };
