@@ -17,31 +17,31 @@ interface PanelImperativeAPI {
 }
 
 export const Layout = () => {
-  const { is2xl, isXl, isLg, isMd, isSm } = useWindowSize();
+  const { is2xl, isXl, isLg, isMd, isSm, width } = useWindowSize();
   const [minTestCaseSpace, setMinTestCaseSpace] = useState<number>(22);
   const codePanelRef = useRef<PanelImperativeAPI | null>(null);
 
   useEffect(() => {
     const codePanel = codePanelRef.current;
     if (codePanel) {
-      if (isSm) {
+      if (width < 1024) {
         codePanel.resize(50);
         setMinTestCaseSpace(25);
-      }
-      if (isMd) {
+      } else if (width >= 1024 && width < 1150) {
         codePanel.resize(65);
         setMinTestCaseSpace(35);
-      }
-      if (isLg) {
+      } else if (width >= 1150 && width < 1370) {
         codePanel.resize(68);
         setMinTestCaseSpace(30);
-      }
-      if (isXl || is2xl) {
+      } else if (width >= 1370 && width < 1440) {
+        codePanel.resize(75);
+        setMinTestCaseSpace(25);
+      } else if (width >= 1440) {
         codePanel.resize(75);
         setMinTestCaseSpace(20);
       }
     }
-  }, [is2xl, isXl, isLg, isMd, isSm]);
+  }, [is2xl, isXl, isLg, isMd, isSm, width]);
 
   return (
     <section className="h-screen flex flex-col bg-background text-foreground">
