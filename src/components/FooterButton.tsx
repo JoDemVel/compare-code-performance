@@ -10,7 +10,7 @@ export const FooterButton = ({ onClick }: FooterButtonProps) => {
       <div className="rounded-lg border-2 border-dashed hover:bg-card w-full h-full">
         <Button
           className="text-xl w-full h-full hover:bg-card"
-          variant="outline"
+          variant="ghost"
           onClick={onClick}
         >
           <div className="flex justify-center">
