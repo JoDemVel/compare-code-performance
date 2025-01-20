@@ -5,7 +5,7 @@ import { BenchmarkArea } from '@/sections/BenchmarkArea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { OutputArea } from '@/sections/OutputArea';
 import { useResultStore } from '@/stores/useResultStore';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { useTheme } from '@/components/theme-provider';
 
@@ -18,12 +18,12 @@ export const TestCaseBenchmarkSpace = () => {
   const getVariant = useMemo(() => {
     return theme === 'dark' ? 'light' : 'dark';
   }, [theme]);
-
-  useResultStore.subscribe(({ isEmpty }) => {
+  
+  useEffect(() => {
     if (!isEmpty) {
       setActiveTab('benchmark');
     }
-  });
+  }, [isEmpty]);
 
   return (
     <Card className="h-full">

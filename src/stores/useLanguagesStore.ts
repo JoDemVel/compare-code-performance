@@ -24,6 +24,7 @@ export const useLanguagesStore = create(
         id: 'javascript',
         name: 'JavaScript',
         tabSize: 2,
+        fileExtension: 'js',
       } as Language,
     },
     (set) => ({
