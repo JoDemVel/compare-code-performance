@@ -65,15 +65,20 @@ export const BenchmarkArea = () => {
       };
     });
 
-    averages.sort((a, b) => b.avg - a.avg);
+    const sortedAverages = [...averages].sort((a, b) => b.avg - a.avg);
 
     const max = Math.max(...averages.map((avg) => avg.avg));
-    return averages.map((avg, index) => ({
-      ...avg,
-      percentage: (avg.avg / max) * 100,
-      invertedPercentage:
-        (averages[averages.length - 1 - index].avg / max) * 100,
-    }));
+    return averages.map((avg) => {
+      const invertedIndex = sortedAverages.findIndex(
+        (sortedAvg) => sortedAvg.avg === avg.avg
+      );
+
+      return {
+        ...avg,
+        percentage: (avg.avg / max) * 100,
+        invertedPercentage: (sortedAverages[invertedIndex].avg / max) * 100,
+      };
+    });
   }, [chartConfig, data, titlesResults]);
 
   const isRunTime = selectedMetric === 'run-time';
