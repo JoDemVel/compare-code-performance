@@ -11,16 +11,31 @@ import {
   HoverCardContent,
   HoverCardTrigger,
 } from '@/components/ui/hover-card';
+import { Button } from '@/components/ui/button';
 import { useLanguagesStore } from '@/stores/useLanguagesStore';
-import { Info } from 'lucide-react';
+import { Info, Trash2 } from 'lucide-react';
+import { useTheme } from '@/components/theme-provider';
+import { useEditorsPropertiesStore } from '@/stores/useEditorsPropertiesStore';
+import { useResultStore } from '@/stores/useResultStore';
+import { useTestCasesStore } from '@/stores/useTestCasesStore';
 
 export const Header = () => {
   const { languages, selectedLanguage, setSelectedLanguage } =
     useLanguagesStore();
+  const { theme } = useTheme();
+  const { clearResults } = useResultStore();
+  const { clearAll, toggleClear } = useEditorsPropertiesStore();
+  const { clearAll: clearAllTestCases } = useTestCasesStore();
+
+  const handleClear = () => {
+    clearAll(selectedLanguage.id);
+    clearAllTestCases(selectedLanguage.id);
+    toggleClear();
+  };
 
   return (
-    <header className="grid grid-cols-5 gap-4 p-3">
-      <div className="flex justify-start items-center pl-5 gap-4">
+    <header className="grid grid-cols-7 gap-4 p-3">
+      <div className="col-span-2 flex justify-start items-center pl-5 gap-4">
         <Select
           value={selectedLanguage.id}
           defaultValue="javascript"
@@ -31,9 +46,14 @@ export const Header = () => {
             if (selected) {
               setSelectedLanguage(selected);
             }
+            clearResults();
           }}
         >
-          <SelectTrigger className="w-[80%] border-inherit border-2 focus:ring-0">
+          <SelectTrigger
+            className={`w-[50%] border-inherit focus:ring-0 ${
+              theme === 'dark' ? 'border-2' : 'border'
+            }`}
+          >
             <SelectValue placeholder="Language" />
           </SelectTrigger>
           <SelectContent className="bg-card">
@@ -54,6 +74,16 @@ export const Header = () => {
             ))}
           </SelectContent>
         </Select>
+        <Button
+          variant="ghost"
+          onClick={handleClear}
+          className={`hover:bg-muted font-normal ${
+            theme === 'dark' ? 'border-2' : 'border'
+          }`}
+        >
+          <span>Clear All</span>
+          <Trash2 />
+        </Button>
         {selectedLanguage.id === 'typescript' && (
           <HoverCard openDelay={0}>
             <HoverCardTrigger>
@@ -97,7 +127,7 @@ export const Header = () => {
       <h1 className="col-span-3 text-center font-semibold flex justify-center items-center 2xl:text-2xl xl:text-2xl lg:text-2xl md:text-2xl sm:text-xl text-md">
         Compare Your Code: Benchmark Performance
       </h1>
-      <div className="flex justify-end items-center pr-5 ">
+      <div className="col-span-2 flex justify-end items-center pr-5 ">
         <ModeToggle />
       </div>
     </header>
