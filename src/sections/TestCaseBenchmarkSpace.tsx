@@ -8,9 +8,10 @@ import { useResultStore } from '@/stores/useResultStore';
 import { useEffect, useMemo, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { useTheme } from '@/components/theme-provider';
+import { Loader } from '@/components/Loader';
 
 export const TestCaseBenchmarkSpace = () => {
-  const { isEmpty } = useResultStore();
+  const { isEmpty, isLoading } = useResultStore();
   const [activeTab, setActiveTab] = useState<string>(
     isEmpty ? 'test-cases' : 'benchmark'
   );
@@ -18,15 +19,18 @@ export const TestCaseBenchmarkSpace = () => {
   const getVariant = useMemo(() => {
     return theme === 'dark' ? 'light' : 'dark';
   }, [theme]);
-  
+
   useEffect(() => {
-    if (!isEmpty) {
+    if (isLoading) {
       setActiveTab('benchmark');
     }
-  }, [isEmpty]);
+    if (isEmpty && !isLoading) {
+      setActiveTab('test-cases');
+    }
+  }, [isEmpty, isLoading]);
 
   return (
-    <Card className="h-full">
+    <Card className="h-full overflow-hidden">
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value)}
@@ -77,10 +81,23 @@ export const TestCaseBenchmarkSpace = () => {
               <TestCaseArea />
             </TabsContent>
             <TabsContent value="output">
+              {isEmpty ? (
+                <div className="h-[300px]">
+                  <Loader text="Running Code..." />
+                </div>
+              ) : (
+                <OutputArea />
+              )}
               <OutputArea />
             </TabsContent>
             <TabsContent value="benchmark">
-              <BenchmarkArea />
+              {isLoading ? (
+                <div className="h-[300px]">
+                  <Loader text="Running Code..." />
+                </div>
+              ) : (
+                <BenchmarkArea />
+              )}
             </TabsContent>
           </CardContent>
         </ScrollArea>

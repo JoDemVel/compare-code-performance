@@ -6,6 +6,7 @@ import { SetStateAction, useCallback, useEffect, useState } from 'react';
 import { TestCase as TestCaseType } from '@/types';
 import { useTestCasesStore } from '@/stores/useTestCasesStore';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useLanguagesStore } from '@/stores/useLanguagesStore';
 
 interface TestCaseProps {
   index: number;
@@ -21,6 +22,7 @@ export const TestCase = ({ index, testCase }: TestCaseProps) => {
   const debouncedTitle = useDebounce(title, 500);
 
   const { removeTestCase, updateTestCase } = useTestCasesStore();
+  const { selectedLanguage } = useLanguagesStore();
 
   const handleTitleClick = () => {
     setIsEditing(true);
@@ -37,12 +39,15 @@ export const TestCase = ({ index, testCase }: TestCaseProps) => {
   };
 
   const handleRemove = useCallback(() => {
-    removeTestCase(id);
-  }, [id, removeTestCase]);
+    removeTestCase(selectedLanguage.id, id);
+  }, [id, removeTestCase, selectedLanguage.id]);
 
   useEffect(() => {
-    updateTestCase(id, { title: debouncedTitle, testCase: debouncedValue });
-  }, [debouncedValue, id, debouncedTitle, updateTestCase]);
+    updateTestCase(selectedLanguage.id, id, {
+      title: debouncedTitle,
+      testCase: debouncedValue,
+    });
+  }, [debouncedValue, id, debouncedTitle, updateTestCase, selectedLanguage.id]);
   return (
     <Card className="p-1 bg-muted flex flex-col gap-2 w-full border-0">
       <div className="border-2 rounded-lg border-dashed px-2">
