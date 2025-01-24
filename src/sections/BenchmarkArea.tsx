@@ -11,7 +11,7 @@ import { TableResult } from '@/components/TableResult';
 import { useResultStore } from '@/stores/useResultStore';
 import { ScrollArea, ScrollBar } from '@/components/ui/scroll-area';
 import { abbreviateNumberFormatter, mlsFormatter } from '@/utils/formatters';
-import { BenchmarkLineChart } from '../components/chart/BenchmarkLineChart';
+import { BenchmarkLineChart } from '@/components/chart/BenchmarkLineChart';
 import { BenchmarkBarChart } from '@/components/chart/BenchmarkBarChart';
 
 export const BenchmarkArea = () => {

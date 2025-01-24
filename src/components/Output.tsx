@@ -1,6 +1,6 @@
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { NumberBadge } from '@/components/NumberBadge';
-import { IndividualOutput } from './IndividualOutput';
+import { IndividualOutput } from '@/components/IndividualOutput';
 import { Result } from '@/types';
 
 export const Output = ({ index, testCase, results }: Result) => {

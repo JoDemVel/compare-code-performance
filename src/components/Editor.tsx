@@ -1,14 +1,14 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Editor as MonacoEditor, OnMount } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
-import { Title } from './Title';
+import { Title } from '@/components/Title';
+import { useTheme } from '@/components/theme-provider';
+import { Loader } from '@/components/Loader';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useEditorsPropertiesStore } from '@/stores/useEditorsPropertiesStore';
 import { EditorProperty, Language } from '@/types';
 import xCodeDefault from 'monaco-themes/themes/Xcode_default.json';
 import tomorrowNight from 'monaco-themes/themes/Tomorrow-Night.json';
-import { useTheme } from './theme-provider';
-import { Loader } from './Loader';
 
 interface EditorProps {
   idEditor: string;

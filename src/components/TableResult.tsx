@@ -9,7 +9,7 @@ import {
 
 interface TableResultProps {
   titles: string[];
-  data: any[];
+  data: unknown[];
 }
 
 export const TableResult = ({ titles, data }: TableResultProps) => {
@@ -25,7 +25,7 @@ export const TableResult = ({ titles, data }: TableResultProps) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row: { [key: string]: string | number }, index: number) => (
+        {(data as { [key: string]: string | number }[]).map((row, index) => (
           <TableRow key={index} className="text-center">
             {titles.map((title) => (
               <TableCell key={title}>{row[title]}</TableCell>
