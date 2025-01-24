@@ -7,6 +7,7 @@ interface CodeTextAreaProps {
   setValue?: React.Dispatch<React.SetStateAction<string>>;
   errorMessage?: string | null;
   editable?: boolean;
+  focus?: boolean;
 }
 
 export const CodeTextArea = ({
@@ -15,12 +16,13 @@ export const CodeTextArea = ({
   setValue,
   errorMessage,
   editable = false,
+  focus = false,
 }: CodeTextAreaProps) => {
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     if (textareaRef.current) {
-      if (value) {
+      if (value != null) {
         textareaRef.current.style.height = '1em';
       } else {
         textareaRef.current.style.height = 'auto';
@@ -47,13 +49,14 @@ export const CodeTextArea = ({
     <div className="relative w-full">
       <textarea
         ref={textareaRef}
-        value={value || errorMessage || ''}
+        value={value ?? errorMessage ?? ''}
         readOnly={!editable}
         onChange={handleChange}
         spellCheck={false}
         className={`w-full resize-none overflow-hidden font-mono bg-background p-2 border rounded-sm pr-10 ${
           errorMessage ? 'text-red-500' : ''
         }`}
+        autoFocus={focus}
         placeholder={placeholder}
       />
       <Copy
