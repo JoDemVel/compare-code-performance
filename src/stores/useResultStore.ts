@@ -7,6 +7,7 @@ export const useResultStore = create(
     {
       results: [] as Result[],
       isEmpty: true,
+      isLoading: false,
     },
     (set) => ({
       addResult: (result: Result) =>
@@ -17,6 +18,7 @@ export const useResultStore = create(
       setResults: (results: Result[]) => set({ results, isEmpty: results.length === 0 }),
       clearResults: () => set({ results: [], isEmpty: true }),
       setIsEmpty: (isEmpty: boolean) => set({ isEmpty }),
+      setIsLoading: (isLoading: boolean) => set({ isLoading }),
     })
   )
 );
