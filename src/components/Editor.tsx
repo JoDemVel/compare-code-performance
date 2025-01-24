@@ -1,24 +1,27 @@
 import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Editor as MonacoEditor, OnMount } from '@monaco-editor/react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 import * as monaco from 'monaco-editor';
 import { Title } from './Title';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useEditorsPropertiesStore } from '@/stores/useEditorsPropertiesStore';
 import { EditorProperty, Language } from '@/types';
+import xCodeDefault from 'monaco-themes/themes/Xcode_default.json';
+import tomorrowNight from 'monaco-themes/themes/Tomorrow-Night.json';
+import { useTheme } from './theme-provider';
+import { Loader } from './Loader';
 
 interface EditorProps {
   idEditor: string;
   handleRun: () => void;
   language: Language;
-  code: string;
+  code?: string;
 }
 
 export const Editor = forwardRef<
   monaco.editor.IStandaloneCodeEditor,
   EditorProps
 >(({ idEditor, handleRun, language, code }, ref) => {
-  const { editorsProperties, updateEditorProperty } =
+  const { editorsProperties, updateEditorProperty, toggleSave } =
     useEditorsPropertiesStore();
   const [isTitleVisible, setIsTitleVisible] = useState(false);
   const [title, setTitle] = useState<string>(
@@ -29,6 +32,7 @@ export const Editor = forwardRef<
   const debouncedTitle = useDebounce(title, 1000);
 
   const fadeTimeout = useRef<NodeJS.Timeout | null>(null);
+  const { theme } = useTheme();
 
   const handleMouseEnter = () => {
     if (fadeTimeout.current) {
@@ -55,17 +59,9 @@ export const Editor = forwardRef<
       handleRun();
     });
 
-    /* Disable semantic validation because monaco editor shares a global context 
-    and it cause problems when using multiple editors */
-    // monaco.languages.typescript.typescriptDefaults.setDiagnosticsOptions({
-    //   noSemanticValidation: true,
-    // });
-    /**add uri */
-    // monaco.editor.createModel(
-    //   code,
-    //   language.id,
-    //   monaco.Uri.parse(`file:///.${idEditor}' + ${language.fileExtension}`)
-    // );
+    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+      toggleSave();
+    });
 
     if (ref) {
       if (typeof ref === 'function') {
@@ -79,34 +75,45 @@ export const Editor = forwardRef<
   };
 
   return (
-    <ScrollArea
-      className="rounded-xl overflow-visible border-gray-600 shadow h-full"
+    <div
+      className="relative rounded-xl overflow-hidden border-gray-600 shadow h-full border border-dashed"
       onMouseMove={handleMouseEnter}
     >
       <Title isVisible={isTitleVisible} title={title} setTitle={setTitle} />
       <MonacoEditor
         className="h-[1200px]"
-        value={code}
+        defaultValue={code}
         language={language.id}
-        theme="vs-dark"
+        theme={theme === 'dark' ? 'tomorrowNight' : 'xCodeDefault'}
+        loading={<Loader text="Loading Editor..." />}
         options={{
           tabSize: language.tabSize,
           minimap: { enabled: false },
-          scrollBeyondLastLine: false,
           wordWrap: 'on',
           overviewRulerBorder: false,
           hideCursorInOverviewRuler: true,
           scrollbar: {
-            vertical: 'hidden',
-            horizontal: 'hidden',
-            verticalScrollbarSize: 10,
-            horizontalScrollbarSize: 10,
-            alwaysConsumeMouseWheel: false,
+            vertical: 'auto',
+            horizontal: 'auto',
+            verticalScrollbarSize: 15,
+            verticalSliderSize: 7,
+            horizontalScrollbarSize: 15,
+            horizontalSliderSize: 7,
           },
           fixedOverflowWidgets: true,
         }}
         onMount={handleEditorDidMount}
+        beforeMount={(monaco) => {
+          monaco.editor.defineTheme(
+            'xCodeDefault',
+            JSON.parse(JSON.stringify(xCodeDefault))
+          );
+          monaco.editor.defineTheme(
+            'tomorrowNight',
+            JSON.parse(JSON.stringify(tomorrowNight))
+          );
+        }}
       />
-    </ScrollArea>
+    </div>
   );
 });
