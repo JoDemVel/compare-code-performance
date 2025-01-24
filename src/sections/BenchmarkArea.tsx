@@ -53,32 +53,30 @@ export const BenchmarkArea = () => {
   const avgData = useMemo(() => {
     if (!data.length) return [];
 
-    const averages = titlesResults.map((title) => {
+    const averages = titlesResults.map((title, index) => {
       const total = data.reduce(
         (sum, item: Record<string, string>) => sum + parseFloat(item[title]),
         0
       );
       return {
+        index: index,
         editor: title,
         avg: parseFloat((total / data.length).toFixed(2)),
         fill: chartConfig[title].color,
       };
     });
 
-    const sortedAverages = [...averages].sort((a, b) => b.avg - a.avg);
+    averages.sort((a, b) => b.avg - a.avg);
 
     const max = Math.max(...averages.map((avg) => avg.avg));
-    return averages.map((avg) => {
-      const invertedIndex = sortedAverages.findIndex(
-        (sortedAvg) => sortedAvg.avg === avg.avg
-      );
-
-      return {
+    return averages
+      .map((avg, index) => ({
         ...avg,
         percentage: (avg.avg / max) * 100,
-        invertedPercentage: (sortedAverages[invertedIndex].avg / max) * 100,
-      };
-    });
+        invertedPercentage:
+          (averages[averages.length - 1 - index].avg / max) * 100,
+      }))
+      .sort((a, b) => a.index - b.index);
   }, [chartConfig, data, titlesResults]);
 
   const isRunTime = selectedMetric === 'run-time';
