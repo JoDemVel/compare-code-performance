@@ -17,7 +17,7 @@ This project was created with the idea of comparing different algorithms to solv
 * Dark and Light Modes: Seamlessly switch between dark and light themes based on your preferences.
 
 ## Visit the Page
-You can visit the website <a href="comparecode.pages.dev" target="_blank">here</a>
+You can visit the website <a href="https://comparecode.pages.dev" target="_blank">here</a>
 
 
 ## Getting Started
