@@ -1,5 +1,5 @@
 import { Copy } from 'lucide-react';
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useCallback, useMemo } from 'react';
 
 interface CodeTextAreaProps {
   placeholder?: string;
@@ -31,19 +31,22 @@ export const CodeTextArea = ({
     }
   }, [value]);
 
-  const handleChange = (e: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
+  const handleChange = useCallback((e: { target: { value: React.SetStateAction<string> } }) => {
     if (setValue) {
       setValue(e.target.value);
     }
-  };
+  }, [setValue]);
 
   const handleCopy = () => {
     if (textareaRef.current) {
       navigator.clipboard.writeText(textareaRef.current.value);
     }
   };
+
+  const textareaClassName = useMemo(() => 
+    `w-full resize-none overflow-hidden font-mono bg-background p-2 border rounded-sm pr-10 ${
+      errorMessage ? 'text-red-500' : ''
+    }`, [errorMessage]);
 
   return (
     <div className="relative w-full">
@@ -53,9 +56,7 @@ export const CodeTextArea = ({
         readOnly={!editable}
         onChange={handleChange}
         spellCheck={false}
-        className={`w-full resize-none overflow-hidden font-mono bg-background p-2 border rounded-sm pr-10 ${
-          errorMessage ? 'text-red-500' : ''
-        }`}
+        className={textareaClassName}
         autoFocus={focus}
         placeholder={placeholder}
       />

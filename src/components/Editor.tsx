@@ -1,4 +1,11 @@
-import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useMemo,
+} from 'react';
 import { Editor as MonacoEditor, OnMount } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { Title } from '@/components/Title';
@@ -34,7 +41,7 @@ export const Editor = forwardRef<
   const fadeTimeout = useRef<NodeJS.Timeout | null>(null);
   const { theme } = useTheme();
 
-  const handleMouseEnter = () => {
+  const handleMouseEnter = useCallback(() => {
     if (fadeTimeout.current) {
       clearTimeout(fadeTimeout.current);
     }
@@ -42,7 +49,7 @@ export const Editor = forwardRef<
     fadeTimeout.current = setTimeout(() => {
       setIsTitleVisible(false);
     }, 3000);
-  };
+  }, []);
 
   const updateProperty = useCallback(
     (id: string, properties: Partial<EditorProperty>) =>
@@ -54,24 +61,59 @@ export const Editor = forwardRef<
     updateProperty(idEditor, { title: debouncedTitle });
   }, [debouncedTitle, idEditor, updateProperty]);
 
-  const handleEditorDidMount: OnMount = (editor, monaco) => {
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
-      handleRun();
-    });
+  const handleEditorDidMount: OnMount = useCallback(
+    (editor, monaco) => {
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.Enter, () => {
+        handleRun();
+      });
 
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
-      toggleSave();
-    });
+      editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyS, () => {
+        toggleSave();
+      });
 
-    if (ref) {
-      if (typeof ref === 'function') {
-        ref(editor);
-      } else {
-        (
-          ref as React.MutableRefObject<monaco.editor.IStandaloneCodeEditor>
-        ).current = editor;
+      if (ref) {
+        if (typeof ref === 'function') {
+          ref(editor);
+        } else {
+          (
+            ref as React.MutableRefObject<monaco.editor.IStandaloneCodeEditor>
+          ).current = editor;
+        }
       }
-    }
+    },
+    [handleRun, toggleSave, ref]
+  );
+
+  const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions =
+    useMemo(
+      () => ({
+        tabSize: language.tabSize,
+        minimap: { enabled: false },
+        wordWrap: 'on',
+        overviewRulerBorder: false,
+        hideCursorInOverviewRuler: true,
+        scrollbar: {
+          vertical: 'auto',
+          horizontal: 'auto',
+          verticalScrollbarSize: 15,
+          verticalSliderSize: 7,
+          horizontalScrollbarSize: 15,
+          horizontalSliderSize: 7,
+        },
+        fixedOverflowWidgets: true,
+      }),
+      [language.tabSize]
+    );
+
+  const beforeMount = (monacoInstance: typeof monaco) => {
+    monacoInstance.editor.defineTheme(
+      'xCodeDefault',
+      JSON.parse(JSON.stringify(xCodeDefault))
+    );
+    monacoInstance.editor.defineTheme(
+      'tomorrowNight',
+      JSON.parse(JSON.stringify(tomorrowNight))
+    );
   };
 
   return (
@@ -86,33 +128,9 @@ export const Editor = forwardRef<
         language={language.id}
         theme={theme === 'dark' ? 'tomorrowNight' : 'xCodeDefault'}
         loading={<Loader text="Loading Editor..." />}
-        options={{
-          tabSize: language.tabSize,
-          minimap: { enabled: false },
-          wordWrap: 'on',
-          overviewRulerBorder: false,
-          hideCursorInOverviewRuler: true,
-          scrollbar: {
-            vertical: 'auto',
-            horizontal: 'auto',
-            verticalScrollbarSize: 15,
-            verticalSliderSize: 7,
-            horizontalScrollbarSize: 15,
-            horizontalSliderSize: 7,
-          },
-          fixedOverflowWidgets: true,
-        }}
+        options={editorOptions}
         onMount={handleEditorDidMount}
-        beforeMount={(monaco) => {
-          monaco.editor.defineTheme(
-            'xCodeDefault',
-            JSON.parse(JSON.stringify(xCodeDefault))
-          );
-          monaco.editor.defineTheme(
-            'tomorrowNight',
-            JSON.parse(JSON.stringify(tomorrowNight))
-          );
-        }}
+        beforeMount={beforeMount}
       />
     </div>
   );

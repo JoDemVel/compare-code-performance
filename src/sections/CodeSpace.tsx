@@ -1,6 +1,6 @@
 import { Editor } from '@/components/Editor';
 import { FooterButton } from '@/components/FooterButton';
-import { useCallback, useEffect, useRef } from 'react';
+import { useCallback, useEffect, useRef, useMemo } from 'react';
 import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
 import * as monaco from 'monaco-editor';
 import { HandlerFactory } from '@/handlers/HandlerFactory';
@@ -19,7 +19,7 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
   const secondEditorRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(
     null
   );
-  const codeHandler: CodeHandler = factory.createHandler();
+  const codeHandler: CodeHandler = useMemo(() => factory.createHandler(), [factory]);
   const { dataTestCases, setDataTestCases } = useTestCasesStore();
   const { selectedLanguage } = useLanguagesStore();
   const { editorsProperties, clearToggled, saveCode, saveToggled } =
@@ -29,7 +29,6 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
     dataTestCases.find(
       (dataTestCase) => dataTestCase.languageId === selectedLanguage.id
     )?.testCases || [];
-  const isFirstRender = useRef(true);
 
   const handleRun = () => {
     if (firstEditorRef.current && secondEditorRef.current) {
@@ -99,7 +98,6 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
 
           return acc;
         }, []);
-        console.log(ans);
         setResults(ans);
         saveCode('editor1', selectedLanguage.id, codeEditor1);
         saveCode('editor2', selectedLanguage.id, codeEditor2);
@@ -148,10 +146,6 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
   }, [clearToggled]);
 
   useEffect(() => {
-    isFirstRender.current = false;
-    console.log('All test cases', dataTestCases);
-    console.log('test Selected', testCases);
-    console.log(selectedLanguage.id);
     const isEmpty = editorsProperties
       .map((editorProperty) => {
         const code = editorProperty.values.find(
@@ -161,15 +155,12 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
       })
       .every((value) => value);
     if (isEmpty && testCases.length === 0) {
-      console.log('isEmpty and testCases is 0');
       const defaultData = getDefaultRandomCodes(selectedLanguage.id);
-      console.log(defaultData);
       saveCode('editor1', selectedLanguage.id, defaultData.selectedCodes[0]);
       saveCode('editor2', selectedLanguage.id, defaultData.selectedCodes[1]);
       setDataTestCases(selectedLanguage.id, defaultData.testCases);
     }
     if (firstEditorRef.current && secondEditorRef.current) {
-      console.log('setting code');
       firstEditorRef.current.setValue(getCode('editor1'));
       secondEditorRef.current.setValue(getCode('editor2'));
     }

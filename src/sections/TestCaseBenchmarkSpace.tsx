@@ -5,7 +5,7 @@ import { BenchmarkArea } from '@/sections/BenchmarkArea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { OutputArea } from '@/sections/OutputArea';
 import { useResultStore } from '@/stores/useResultStore';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { useTheme } from '@/components/theme-provider';
 import { Loader } from '@/components/Loader';
@@ -16,15 +16,12 @@ export const TestCaseBenchmarkSpace = () => {
     isEmpty ? 'test-cases' : 'benchmark'
   );
   const { theme } = useTheme();
-  const getVariant = useMemo(() => {
-    return theme === 'dark' ? 'light' : 'dark';
-  }, [theme]);
+  const getVariant = theme === 'dark' ? 'light' : 'dark';
 
   useEffect(() => {
     if (isLoading) {
       setActiveTab('benchmark');
-    }
-    if (isEmpty && !isLoading) {
+    } else if (isEmpty) {
       setActiveTab('test-cases');
     }
   }, [isEmpty, isLoading]);
@@ -88,7 +85,6 @@ export const TestCaseBenchmarkSpace = () => {
               ) : (
                 <OutputArea />
               )}
-              <OutputArea />
             </TabsContent>
             <TabsContent value="benchmark">
               {isLoading ? (
@@ -116,7 +112,6 @@ export const TestCaseBenchmarkSpace = () => {
             place="bottom-end"
             variant={getVariant}
             content="Run the test cases to see the benchmark"
-            className=""
             opacity={0.5}
           />
         </>
@@ -124,3 +119,4 @@ export const TestCaseBenchmarkSpace = () => {
     </Card>
   );
 };
+

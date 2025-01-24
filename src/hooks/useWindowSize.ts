@@ -1,11 +1,8 @@
 import { useState, useEffect } from 'react';
 
-interface WindowSize {
+interface WindowProperties {
   width: number;
   height: number;
-}
-
-interface WindowProperties extends WindowSize {
   isSm: boolean;
   isMd: boolean;
   isLg: boolean;
@@ -14,35 +11,32 @@ interface WindowProperties extends WindowSize {
 }
 
 export const useWindowSize = (): WindowProperties => {
-  const [windowSize, setWindowSize] = useState<WindowSize>({
+  const [windowSize, setWindowSize] = useState({
     width: window.innerWidth,
     height: window.innerHeight,
   });
-  const [isSm, setIsSm] = useState<boolean>(false);
-  const [isMd, setIsMd] = useState<boolean>(false);
-  const [isLg, setIsLg] = useState<boolean>(false);
-  const [isXl, setIsXl] = useState<boolean>(false);
-  const [is2xl, setIs2xl] = useState<boolean>(false);
+
+  const calculateBreakpoints = (width: number) => ({
+    isSm: width < 1024,
+    isMd: width >= 1024 && width < 1150,
+    isLg: width >= 1150 && width < 1370,
+    isXl: width >= 1370 && width < 1440,
+    is2xl: width >= 1440,
+  });
+
+  const [breakpoints, setBreakpoints] = useState(calculateBreakpoints(window.innerWidth));
 
   useEffect(() => {
     const handleResize = () => {
-      setWindowSize({
-        width: window.innerWidth,
-        height: window.innerHeight,
-      });
+      const width = window.innerWidth;
+      const height = window.innerHeight;
+      setWindowSize({ width, height });
+      setBreakpoints(calculateBreakpoints(width));
     };
 
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  useEffect(() => {
-    setIs2xl(windowSize.width >= 1440);
-    setIsXl(windowSize.width >= 1370 && windowSize.width < 1440);
-    setIsLg(windowSize.width >= 1150 && windowSize.width < 1370);
-    setIsMd(windowSize.width >= 1024 && windowSize.width < 1150);
-    setIsSm(windowSize.width < 1024);
-  }, [windowSize.width]);
-
-  return { ...windowSize, isSm, isMd, isLg, isXl, is2xl };
+  return { ...windowSize, ...breakpoints };
 };

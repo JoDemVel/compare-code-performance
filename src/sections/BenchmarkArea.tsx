@@ -16,89 +16,66 @@ import { BenchmarkBarChart } from '@/components/chart/BenchmarkBarChart';
 
 export const BenchmarkArea = () => {
   const { results } = useResultStore();
-  const [dataSelected, setDataSelected] = useState('run-time');
-  const titlesResults = useMemo(() => {
-    if (results.length === 0) return [];
-    return results[0].results.map((output) => output.editorTitle);
-  }, [results]);
-  const chartConfig = Object.fromEntries(
-    titlesResults.map((title, index) => [
-      title,
-      { label: title, color: `hsl(var(--chart-${index + 1}))` },
-    ])
-  ) as ChartConfig;
+  const [selectedMetric, setSelectedMetric] = useState('run-time');
+
+  const titlesResults = useMemo(
+    () => (results.length > 0 ? results[0].results.map((output) => output.editorTitle) : []),
+    [results]
+  );
+
+  const chartConfig = useMemo(() => {
+    return Object.fromEntries(
+      titlesResults.map((title, index) => [
+        title,
+        { label: title, color: `hsl(var(--chart-${index + 1}))` },
+      ])
+    ) as ChartConfig;
+  }, [titlesResults]);
 
   const data = useMemo(() => {
-    return results.map((result) => ({
+    return results.map((result): Record<string, string> => ({
       'Test Case': `${result.index + 1}-${result.testCase}`,
       ...result.results.reduce((acc: Record<string, string>, output) => {
         acc[output.editorTitle] =
-          dataSelected === 'ops-per-sec'
+          selectedMetric === 'ops-per-sec'
             ? String(output.output.opsPerSec)
             : output.output.runTime.toFixed(3);
         return acc;
       }, {}),
     }));
-  }, [results, dataSelected]);
+  }, [results, selectedMetric]);
 
   const avgData = useMemo(() => {
-    if (!data || data.length === 0) return [];
+    if (!data.length) return [];
 
-    const sums = titlesResults.reduce(
-      (acc: Record<string, number>, title: string) => {
-        acc[title] = 0;
-        return acc;
-      },
-      {}
-    );
-
-    data.forEach((item: Record<string, string>) => {
-      titlesResults.forEach((title) => {
-        sums[title] += parseFloat(item[title]);
-      });
+    const averages = titlesResults.map((title) => {
+      const total = data.reduce((sum, item: Record<string, string>) => sum + parseFloat(item[title]), 0);
+      return {
+        editor: title,
+        avg: parseFloat((total / data.length).toFixed(2)),
+        fill: chartConfig[title].color,
+      };
     });
-
-    const averages = titlesResults.map((title) => ({
-      editor: title,
-      avg: parseFloat((sums[title] / data.length).toFixed(2)),
-      fill: chartConfig[title].color,
-    }));
 
     averages.sort((a, b) => b.avg - a.avg);
 
     const max = Math.max(...averages.map((avg) => avg.avg));
-    const percentages: {
-      editor: string;
-      percentage: number;
-      fill?: string;
-      invertedPercentage?: number;
-      avg: number;
-    }[] = averages.map((avg) => ({
-      editor: avg.editor,
+    return averages.map((avg, index) => ({
+      ...avg,
       percentage: (avg.avg / max) * 100,
-      fill: avg.fill,
-      avg: avg.avg,
+      invertedPercentage: (averages[averages.length - 1 - index].avg / max) * 100,
     }));
-
-    percentages.forEach((percentage, index) => {
-      percentage.invertedPercentage =
-        percentages[percentages.length - 1 - index].percentage;
-    });
-
-    return percentages;
   }, [chartConfig, data, titlesResults]);
 
+  const isRunTime = selectedMetric === 'run-time';
+  const formatter = isRunTime ? mlsFormatter : abbreviateNumberFormatter;
+  const valueLabel = isRunTime ? 'Run Time (ms)' : 'Ops. Per Sec';
+
   return (
-    <div className="flex flex-col gap-4 justify-center items-center 2xl:pb-16 xl:pb-16 lg:pb-24 md:pb-16 sm:pb-16 pb-16">
+    <div className="flex flex-col gap-4 justify-center items-center pb-16">
       <div className="flex justify-between items-center w-full">
         <h2 className="text-xl font-semibold">Benchmark Results</h2>
-        <Select
-          value={dataSelected}
-          defaultValue="run-time"
-          onValueChange={(value) => {
-            setDataSelected(value);
-          }}
-        >
+        <Select value={selectedMetric} onValueChange={setSelectedMetric}>
           <SelectTrigger className="w-[130px] border-inherit border-dashed border-2 focus:ring-0">
             <SelectValue placeholder="Theme" />
           </SelectTrigger>
@@ -112,39 +89,21 @@ export const BenchmarkArea = () => {
         <BenchmarkLineChart
           chartConfig={chartConfig}
           data={data}
-          yAxisTickFormatter={
-            dataSelected === 'run-time'
-              ? mlsFormatter
-              : abbreviateNumberFormatter
-          }
-          yAxisValueLabel={
-            dataSelected === 'ops-per-sec' ? 'Ops. Per Sec' : 'Run Time (ms)'
-          }
-          tooltipFormatter={
-            dataSelected === 'run-time'
-              ? mlsFormatter
-              : abbreviateNumberFormatter
-          }
+          yAxisTickFormatter={formatter}
+          yAxisValueLabel={valueLabel}
+          tooltipFormatter={formatter}
           titles={titlesResults}
         />
       </ScrollArea>
       <ScrollArea className="w-[90%]">
-        <h2 className="text-lg font-semibold text-foreground">
-          Average Results
-        </h2>
+        <h2 className="text-lg font-semibold text-foreground">Average Results</h2>
         <BenchmarkBarChart
           chartConfig={chartConfig}
           avgData={avgData}
           yAxisDataKey="editor"
-          tooltipFormatter={
-            dataSelected === 'run-time'
-              ? mlsFormatter
-              : abbreviateNumberFormatter
-          }
+          tooltipFormatter={formatter}
           xAxisDataKey="percentage"
-          barDataKey={
-            dataSelected === 'run-time' ? 'invertedPercentage' : 'percentage'
-          }
+          barDataKey={isRunTime ? 'invertedPercentage' : 'percentage'}
         />
       </ScrollArea>
       <ScrollArea className="w-[90%]">

@@ -33,21 +33,20 @@ export const Header = () => {
     toggleClear();
   };
 
+  const handleLanguageChange = (value: string) => {
+    const selected = languages.find((language) => language.id === value);
+    if (selected) {
+      setSelectedLanguage(selected);
+    }
+    clearResults();
+  };
+
   return (
     <header className="grid grid-cols-7 gap-4 p-3">
-      <div className="col-span-2 flex justify-start items-center pl-5 gap-4">
+      <div className="col-span-2 flex items-center pl-5 gap-4">
         <Select
           value={selectedLanguage.id}
-          defaultValue="javascript"
-          onValueChange={(value) => {
-            const selected = languages.find(
-              (language) => language.id === value
-            );
-            if (selected) {
-              setSelectedLanguage(selected);
-            }
-            clearResults();
-          }}
+          onValueChange={handleLanguageChange}
         >
           <SelectTrigger
             className={`w-[50%] border-inherit focus:ring-0 ${
@@ -57,17 +56,18 @@ export const Header = () => {
             <SelectValue placeholder="Language" />
           </SelectTrigger>
           <SelectContent className="bg-card">
-            {languages.map((language) => (
-              <SelectItem value={language.id} key={language.id}>
-                <div className="w-full flex justify-center items-center">
+            {languages.map(({ id, name, version }) => (
+              <SelectItem value={id} key={id}>
+                <div className="w-full flex items-center">
                   <span className="mr-3 title-overflow">
-                    {language.name}
-                    {language.version && ` - ${language.version}`}
+                    {name}
+                    {version && ` - ${version}`}
                   </span>
                   <img
-                    src={`./${language.id}.svg`}
-                    alt={language.name}
+                    src={`./${id}.svg`}
+                    alt={name}
                     className="w-5 h-5"
+                    loading="lazy"
                   />
                 </div>
               </SelectItem>
@@ -81,7 +81,7 @@ export const Header = () => {
             theme === 'dark' ? 'border-2' : 'border'
           }`}
         >
-          <span>Clear All</span>
+          Clear All
           <Trash2 />
         </Button>
         {selectedLanguage.id === 'typescript' && (
@@ -127,7 +127,7 @@ export const Header = () => {
       <h1 className="col-span-3 text-center font-semibold flex justify-center items-center 2xl:text-2xl xl:text-2xl lg:text-2xl md:text-2xl sm:text-xl text-md">
         Compare Your Code: Benchmark Performance
       </h1>
-      <div className="col-span-2 flex justify-end items-center pr-5 ">
+      <div className="col-span-2 flex justify-end items-center pr-5">
         <ModeToggle />
       </div>
     </header>

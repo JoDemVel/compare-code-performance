@@ -56,11 +56,14 @@ export const useTestCasesStore = create(
           );
           return { dataTestCases };
         }),
-        setDataTestCases: (languageId: string, testCases: TestCase[]) => set((state) => {
-          const dataTestCases = state.dataTestCases.filter((dataTestCase) => dataTestCase.languageId !== languageId);
-          console.log('dataTestCases from useTestCasesStore', [...dataTestCases, { languageId, testCases }]);
-          return { dataTestCases: [...dataTestCases, { languageId, testCases }] };
-        })
+        setDataTestCases: (languageId: string, testCases: TestCase[]) =>
+          set((state) => ({
+            dataTestCases: state.dataTestCases.map((dataTestCase) =>
+              dataTestCase.languageId === languageId
+                ? { ...dataTestCase, testCases }
+                : dataTestCase
+            ),
+          })),
       })
     ),
     { name: 'test-cases' }
