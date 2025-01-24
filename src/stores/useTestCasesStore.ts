@@ -5,20 +5,63 @@ import { combine, persist } from 'zustand/middleware';
 export const useTestCasesStore = create(
   persist(
     combine(
-      { testCases: [] as TestCase[] },
+      { 
+        dataTestCases: [
+          {
+            languageId: 'javascript',
+            testCases: [] as TestCase[],
+          },
+          {
+            languageId: 'typescript',
+            testCases: [] as TestCase[],
+          },
+        ]
+      },
       (set) => ({
-        addTestCase: (testCase: TestCase) =>
+        addTestCase: (languageId:string,  testCase: TestCase) =>
+          set((state) => {
+            const dataTestCases = state.dataTestCases.map((dataTestCase) =>
+              dataTestCase.languageId === languageId
+                ? { ...dataTestCase, testCases: [testCase, ...dataTestCase.testCases] }
+                : dataTestCase
+            );
+            return { dataTestCases };
+          }),
+        removeTestCase: (languageId:string, id: string) =>
+          set((state) => {
+            const dataTestCases = state.dataTestCases.map((dataTestCase) =>
+              dataTestCase.languageId === languageId
+                ? { ...dataTestCase, testCases: dataTestCase.testCases.filter((testCase) => testCase.id !== id) }
+                : dataTestCase
+            );
+            return { dataTestCases };
+          }),
+        updateTestCase: (languageId:string, id: string, newTestCase: Partial<TestCase>) =>
+          set((state) => {
+            const dataTestCases = state.dataTestCases.map((dataTestCase) =>
+              dataTestCase.languageId === languageId
+                ? {
+                    ...dataTestCase,
+                    testCases: dataTestCase.testCases.map((testCase) =>
+                      testCase.id === id ? { ...testCase, ...newTestCase } : testCase
+                    ),
+                  }
+                : dataTestCase
+            );
+            return { dataTestCases };
+          }),
+        clearAll: (languageId: string) => set((state) => {
+          const dataTestCases = state.dataTestCases.map((dataTestCase) =>
+            dataTestCase.languageId === languageId ? { ...dataTestCase, testCases: [] } : dataTestCase
+          );
+          return { dataTestCases };
+        }),
+        setDataTestCases: (languageId: string, testCases: TestCase[]) =>
           set((state) => ({
-            testCases: [testCase, ...state.testCases],
-          })),
-        removeTestCase: (id: string) =>
-          set((state) => ({
-            testCases: state.testCases.filter((testCase) => testCase.id !== id),
-          })),
-        updateTestCase: (id: string, newTestCase: Partial<TestCase>) =>
-          set((state) => ({
-            testCases: state.testCases.map((testCase) =>
-              testCase.id === id ? { ...testCase, ...newTestCase } : testCase
+            dataTestCases: state.dataTestCases.map((dataTestCase) =>
+              dataTestCase.languageId === languageId
+                ? { ...dataTestCase, testCases }
+                : dataTestCase
             ),
           })),
       })

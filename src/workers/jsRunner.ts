@@ -11,6 +11,17 @@ ctx.onmessage = async (event: MessageEvent<Input>) => {
     const result = fn();
     const timeEnd = performance.now();
     const runTime = (timeEnd - timeStart);
+
+    if (result === undefined) {
+      ctx.postMessage({
+        output: null,
+        error: "Unexpected undefined output. Make sure you are returning a value from the function.",
+        runTime,
+        opsPerSec: 0,
+      } as Output);
+      return;
+    }
+
     let opsPerSec = 0;
     const start = Date.now();
     const end = start + 1000;
@@ -19,8 +30,8 @@ ctx.onmessage = async (event: MessageEvent<Input>) => {
       opsPerSec++;
     }
 
-    ctx.postMessage({ output: result, error: null, runTime, opsPerSec} as Output);
+    ctx.postMessage({ output: JSON.stringify(result), error: null, runTime, opsPerSec} as Output);
   } catch (error) {
-    ctx.postMessage({ output: null, error: (error as Error).message } as Output);
+    ctx.postMessage({ output: null, error: (error as Error).message, runTime: 0, opsPerSec: 0 } as Output);
   }
 };

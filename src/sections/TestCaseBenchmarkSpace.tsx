@@ -5,28 +5,29 @@ import { BenchmarkArea } from '@/sections/BenchmarkArea';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { OutputArea } from '@/sections/OutputArea';
 import { useResultStore } from '@/stores/useResultStore';
-import { useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Tooltip } from 'react-tooltip';
 import { useTheme } from '@/components/theme-provider';
+import { Loader } from '@/components/Loader';
 
 export const TestCaseBenchmarkSpace = () => {
-  const { isEmpty } = useResultStore();
+  const { isEmpty, isLoading } = useResultStore();
   const [activeTab, setActiveTab] = useState<string>(
     isEmpty ? 'test-cases' : 'benchmark'
   );
   const { theme } = useTheme();
-  const getVariant = useMemo(() => {
-    return theme === 'dark' ? 'light' : 'dark';
-  }, [theme]);
+  const getVariant = theme === 'dark' ? 'light' : 'dark';
 
-  useResultStore.subscribe(({ isEmpty }) => {
-    if (!isEmpty) {
+  useEffect(() => {
+    if (isLoading) {
       setActiveTab('benchmark');
+    } else if (isEmpty) {
+      setActiveTab('test-cases');
     }
-  });
+  }, [isEmpty, isLoading]);
 
   return (
-    <Card className="h-full">
+    <Card className="h-full overflow-hidden">
       <Tabs
         value={activeTab}
         onValueChange={(value) => setActiveTab(value)}
@@ -77,10 +78,22 @@ export const TestCaseBenchmarkSpace = () => {
               <TestCaseArea />
             </TabsContent>
             <TabsContent value="output">
-              <OutputArea />
+              {isEmpty ? (
+                <div className="h-[300px]">
+                  <Loader text="Running Code..." />
+                </div>
+              ) : (
+                <OutputArea />
+              )}
             </TabsContent>
             <TabsContent value="benchmark">
-              <BenchmarkArea />
+              {isLoading ? (
+                <div className="h-[300px]">
+                  <Loader text="Running Code..." />
+                </div>
+              ) : (
+                <BenchmarkArea />
+              )}
             </TabsContent>
           </CardContent>
         </ScrollArea>
@@ -99,7 +112,6 @@ export const TestCaseBenchmarkSpace = () => {
             place="bottom-end"
             variant={getVariant}
             content="Run the test cases to see the benchmark"
-            className=""
             opacity={0.5}
           />
         </>
@@ -107,3 +119,4 @@ export const TestCaseBenchmarkSpace = () => {
     </Card>
   );
 };
+

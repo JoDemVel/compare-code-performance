@@ -1,11 +1,20 @@
 interface NumberBadgeProps {
   number: number;
+  className?: string;
+  ariaLabel?: string;
 }
 
-export const NumberBadge = ({ number }: NumberBadgeProps) => {
-  return (
-    <span className="bg-badge text-badge-foreground flex justify-center items-center rounded-[9999px] w-[32px] p-2 h-[32px] text-[14px]">
-      {number}
-    </span>
-  );
-};
+export const NumberBadge = ({
+  number,
+  className,
+  ariaLabel,
+}: NumberBadgeProps) => (
+  <span
+    className={`bg-badge text-badge-foreground flex justify-center items-center rounded-full w-8 h-8 text-sm font-medium ${
+      className ?? ''
+    }`}
+    aria-label={ariaLabel}
+  >
+    {number}
+  </span>
+);

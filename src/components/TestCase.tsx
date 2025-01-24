@@ -1,11 +1,12 @@
 import { Card, CardContent, CardTitle } from '@/components/ui/card';
 import { CodeTextArea } from '@/components/CodeTextArea';
 import { X } from 'lucide-react';
-import { NumberBadge } from '@/components/NumberBadge';
-import { SetStateAction, useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { TestCase as TestCaseType } from '@/types';
 import { useTestCasesStore } from '@/stores/useTestCasesStore';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useLanguagesStore } from '@/stores/useLanguagesStore';
+import { NumberBadge } from '@/components/NumberBadge';
 
 interface TestCaseProps {
   index: number;
@@ -13,49 +14,56 @@ interface TestCaseProps {
 }
 
 export const TestCase = ({ index, testCase }: TestCaseProps) => {
-  const [isEditing, setIsEditing] = useState<boolean>(false);
-  const [title, setTitle] = useState<string>(testCase.title);
-  const [testCaseCode, setTestCaseCode] = useState<string>(testCase.testCase);
-  const { id } = testCase;
-  const debouncedValue = useDebounce(testCaseCode, 500);
+  const { id, title: initialTitle, testCase: initialTestCase } = testCase;
+  const [isEditing, setIsEditing] = useState(false);
+  const [title, setTitle] = useState(initialTitle);
+  const [testCaseCode, setTestCaseCode] = useState(initialTestCase);
+
   const debouncedTitle = useDebounce(title, 500);
+  const debouncedTestCase = useDebounce(testCaseCode, 500);
 
   const { removeTestCase, updateTestCase } = useTestCasesStore();
+  const { selectedLanguage } = useLanguagesStore();
 
-  const handleTitleClick = () => {
-    setIsEditing(true);
-  };
+  const handleTitleEdit = useCallback(() => setIsEditing(true), []);
+  const handleTitleBlur = useCallback(() => setIsEditing(false), []);
+  const handleTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      setTitle(e.target.value);
+    },
+    []
+  );
 
-  const handleInputBlur = () => {
-    setIsEditing(false);
-  };
-
-  const handleInputChange = (e: {
-    target: { value: SetStateAction<string> };
-  }) => {
-    setTitle(e.target.value);
-  };
-
-  const handleRemove = useCallback(() => {
-    removeTestCase(id);
-  }, [id, removeTestCase]);
+  const handleRemoveTestCase = useCallback(() => {
+    removeTestCase(selectedLanguage.id, id);
+  }, [id, removeTestCase, selectedLanguage.id]);
 
   useEffect(() => {
-    updateTestCase(id, { title: debouncedTitle, testCase: debouncedValue });
-  }, [debouncedValue, id, debouncedTitle, updateTestCase]);
+    updateTestCase(selectedLanguage.id, id, {
+      title: debouncedTitle,
+      testCase: debouncedTestCase,
+    });
+  }, [
+    debouncedTitle,
+    debouncedTestCase,
+    id,
+    updateTestCase,
+    selectedLanguage.id,
+  ]);
+
   return (
     <Card className="p-1 bg-muted flex flex-col gap-2 w-full border-0">
       <div className="border-2 rounded-lg border-dashed px-2">
         <CardTitle className="py-2 flex items-center justify-between">
           <div className="flex items-center gap-5 w-full">
-            <NumberBadge number={index + 1} />
+            <NumberBadge number={index + 1} ariaLabel="Test case number" />
             <div className="w-[70%]">
               {isEditing ? (
                 <input
                   type="text"
                   value={title}
-                  onChange={handleInputChange}
-                  onBlur={handleInputBlur}
+                  onChange={handleTitleChange}
+                  onBlur={handleTitleBlur}
                   autoFocus
                   spellCheck={false}
                   className="w-full text-lg bg-transparent border-transparent focus:outline-none"
@@ -63,7 +71,7 @@ export const TestCase = ({ index, testCase }: TestCaseProps) => {
               ) : (
                 <span
                   className="text-lg cursor-text title-overflow"
-                  onClick={handleTitleClick}
+                  onClick={handleTitleEdit}
                   spellCheck={false}
                 >
                   {title}
@@ -73,7 +81,7 @@ export const TestCase = ({ index, testCase }: TestCaseProps) => {
           </div>
           <X
             className="cursor-pointer hover:scale-105 transition-transform duration-200"
-            onClick={handleRemove}
+            onClick={handleRemoveTestCase}
           />
         </CardTitle>
         <CardContent className="bg-backgrounds p-0">
@@ -82,6 +90,7 @@ export const TestCase = ({ index, testCase }: TestCaseProps) => {
             setValue={setTestCaseCode}
             placeholder="Call the method with the test case input here..."
             editable
+            focus={index === 0 && !testCaseCode}
           />
         </CardContent>
       </div>

@@ -10,17 +10,17 @@ export const FooterButton = ({ onClick }: FooterButtonProps) => {
       <div className="rounded-lg border-2 border-dashed hover:bg-card w-full h-full">
         <Button
           className="text-xl w-full h-full hover:bg-card"
-          variant="outline"
+          variant="ghost"
           onClick={onClick}
         >
           <div className="flex justify-center">
             <span className="px-5">Run Tests</span>
             <div className="flex items-center gap-2">
-              <kbd className="px-3 py-0.5 text-base font-semibold bg-muted rounded">
+              <kbd className="px-3 py-0.5 text-base font-semibold rounded border">
                 Ctrl
               </kbd>
               <span className="text-sm font-semibold">+</span>
-              <kbd className="px-3 py-0.5 text-base font-semibold bg-muted rounded">
+              <kbd className="px-3 py-0.5 text-base font-semibold rounded border">
                 ↵
               </kbd>
             </div>

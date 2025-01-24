@@ -17,31 +17,34 @@ interface PanelImperativeAPI {
 }
 
 export const Layout = () => {
-  const { is2xl, isXl, isLg, isMd, isSm } = useWindowSize();
+  const { isSm, width } = useWindowSize();
   const [minTestCaseSpace, setMinTestCaseSpace] = useState<number>(22);
   const codePanelRef = useRef<PanelImperativeAPI | null>(null);
 
-  useEffect(() => {
-    const codePanel = codePanelRef.current;
-    if (codePanel) {
-      if (isSm) {
-        codePanel.resize(50);
-        setMinTestCaseSpace(25);
-      }
-      if (isMd) {
-        codePanel.resize(65);
-        setMinTestCaseSpace(35);
-      }
-      if (isLg) {
-        codePanel.resize(68);
-        setMinTestCaseSpace(30);
-      }
-      if (isXl || is2xl) {
-        codePanel.resize(75);
-        setMinTestCaseSpace(20);
-      }
+  const updatePanelSizes = (width: number) => {
+    if (!codePanelRef.current) return;
+
+    if (width < 1024) {
+      codePanelRef.current.resize(50);
+      setMinTestCaseSpace(25);
+    } else if (width < 1150) {
+      codePanelRef.current.resize(65);
+      setMinTestCaseSpace(35);
+    } else if (width < 1370) {
+      codePanelRef.current.resize(68);
+      setMinTestCaseSpace(30);
+    } else if (width < 1440) {
+      codePanelRef.current.resize(75);
+      setMinTestCaseSpace(25);
+    } else {
+      codePanelRef.current.resize(75);
+      setMinTestCaseSpace(20);
     }
-  }, [is2xl, isXl, isLg, isMd, isSm]);
+  };
+
+  useEffect(() => {
+    updatePanelSizes(width);
+  }, [width]);
 
   return (
     <section className="h-screen flex flex-col bg-background text-foreground">

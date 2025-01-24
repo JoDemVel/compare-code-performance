@@ -9,12 +9,12 @@ import {
 
 interface TableResultProps {
   titles: string[];
-  data: any[];
+  data: Record<string, string | number>[];
 }
 
 export const TableResult = ({ titles, data }: TableResultProps) => {
   return (
-    <Table>
+    <Table className="table-auto">
       <TableHeader>
         <TableRow>
           {titles.map((title) => (
@@ -25,13 +25,23 @@ export const TableResult = ({ titles, data }: TableResultProps) => {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {data.map((row: { [key: string]: string | number }, index: number) => (
-          <TableRow key={index} className="text-center">
-            {titles.map((title) => (
-              <TableCell key={title}>{row[title]}</TableCell>
-            ))}
+        {data.length > 0 ? (
+          data.map((row, rowIndex) => (
+            <TableRow key={rowIndex} className="text-center">
+              {titles.map((title) => (
+                <TableCell key={`${rowIndex}-${title}`}>
+                  {row[title] !== undefined ? row[title] : '-'}
+                </TableCell>
+              ))}
+            </TableRow>
+          ))
+        ) : (
+          <TableRow>
+            <TableCell colSpan={titles.length} className="text-center">
+              No data available
+            </TableCell>
           </TableRow>
-        ))}
+        )}
       </TableBody>
     </Table>
   );
