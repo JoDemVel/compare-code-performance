@@ -30,7 +30,7 @@ ctx.onmessage = async (event: MessageEvent<Input>) => {
       opsPerSec++;
     }
 
-    ctx.postMessage({ output: result, error: null, runTime, opsPerSec} as Output);
+    ctx.postMessage({ output: JSON.stringify(result), error: null, runTime, opsPerSec} as Output);
   } catch (error) {
     ctx.postMessage({ output: null, error: (error as Error).message, runTime: 0, opsPerSec: 0 } as Output);
   }

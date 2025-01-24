@@ -25,9 +25,15 @@ export interface Language {
   fileExtension: string;
 }
 
+export interface Code {
+  languageId: string;
+  code: string;
+}
+
 export interface EditorProperty {
   idEditor: string;
   title: string;
+  values: Code[];
 }
 
 export interface UnitResult {
