@@ -1,5 +1,7 @@
 import { HomePage } from '@/pages/HomePage';
 import { ThemeProvider } from '@/components/theme-provider';
+import '@/App.css';
+
 function App() {
   return (
     <>
