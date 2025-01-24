@@ -23,14 +23,23 @@
   }
 }
 
-.loading:after {
-  overflow: hidden;
+.loader {
+  width: 30px;
+  height: 30px;
+  border: 5px solid #d1d5d5;
+  border-bottom-color: #475659;
+  border-radius: 50%;
   display: inline-block;
-  vertical-align: bottom;
-  -webkit-animation: ellipsis steps(4, end) 900ms infinite;
-  animation: ellipsis steps(4, end) 900ms infinite;
-  content: "\2026";
-  width: 0px;
+  box-sizing: border-box;
+  animation: spin 1s linear infinite;
+}
+
+.loader-text {
+  font-size: 1.125rem;
+  font-weight: 600;
+  color: var(--foreground);
+  font-family: 'monospace', monospace;
+  animation: opacity 0.8s linear infinite alternate;
 }
 
 @keyframes ellipsis {
