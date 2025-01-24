@@ -127,7 +127,21 @@ export const Header = () => {
       <h1 className="col-span-3 text-center font-semibold flex justify-center items-center 2xl:text-2xl xl:text-2xl lg:text-2xl md:text-2xl sm:text-xl text-md">
         Compare Your Code: Benchmark Performance
       </h1>
-      <div className="col-span-2 flex justify-end items-center pr-5">
+      <div className="col-span-2 flex justify-end items-center pr-5 gap-4">
+        <img
+          src={`https://cdn.simpleicons.org/github/${
+            theme === 'dark' ? 'white' : 'dark'
+          }`}
+          alt={'GitHub Logo'}
+          className="w-6 h-6 hover:cursor-pointer hover:scale-110 transition-transform duration-200"
+          loading="lazy"
+          onClick={() =>
+            window.open(
+              'https://github.com/JoDemVel/compare-code-performance',
+              '_blank'
+            )
+          }
+        />
         <ModeToggle />
       </div>
     </header>
