@@ -1,9 +1,13 @@
+import { HomePage } from '@/pages/HomePage';
+import { ThemeProvider } from '@/components/theme-provider';
+import '@/App.css';
+
 function App() {
   return (
     <>
-      <h1 className="text-3xl font-bold underline">
-        Compare Your Code: Benchmark Performance
-      </h1>
+      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+        {<HomePage />}
+      </ThemeProvider>
     </>
   );
 }

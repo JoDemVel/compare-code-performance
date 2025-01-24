@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
 
@@ -5,4 +9,75 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+@layer base {
+  :root {
+    --background: 0 0% 95%;
+    --foreground: 224 71.4% 8% / 85%;
+    --card: 0 0% 100%;
+    --card-foreground: 224 71.4% 4.1%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 224 71.4% 4.1%;
+    --primary: 220.9 39.3% 11%;
+    --primary-foreground: 210 20% 98%;
+    --secondary: 220 14.3% 95.9%;
+    --secondary-foreground: 220.9 39.3% 11%;
+    --muted: 204, 11%, 91%;
+    --muted-foreground: 220 8.9% 46.1%;
+    --accent: 220 14.3% 95.9%;
+    --accent-foreground: 220.9 39.3% 11%;
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 210 20% 98%;
+    --border: 276, 2%, 41%;
+    --input: 220 13% 91%;
+    --ring: 224 71.4% 4.1%;
+    --chart-1: 225, 27%, 51%;
+    --chart-2: 31, 100%, 71%;
+    --chart-3: 0, 100%, 67%;
+    --chart-4: 326, 100%, 74%;
+    --chart-5: 135, 94%, 65%;
+    --radius: 0.5rem;
+    --badge: 207, 4%, 50%;
+    --badge-foreground: 232, 7%, 90%;
+    --scrollbar: 0, 0%, 77%;
+  }
+  .dark {
+    --background: 232, 8%, 20%;
+    --foreground: 232, 7%, 80%;
+    --card: 228, 6%, 19%;
+    --card-foreground: 232, 7%, 80%;
+    --popover: 0, 3%, 21%;
+    --popover-foreground: 210 20% 90%;
+    --primary: 0, 2%, 53%;
+    --primary-foreground: 0 0% 98%;
+    --secondary: 215 25% 16%;
+    --secondary-foreground: 210 20% 85%;
+    --muted: 228, 6%, 16%;
+    --muted-foreground: 210 15% 60%;
+    --accent: 228, 6%, 16%;
+    --accent-foreground: 0 0% 98%;
+    --destructive: 0 65% 40%;
+    --destructive-foreground: 0 0% 98%;
+    --border: 220 40% 90% / 15%;
+    --input: 270, 4%, 33%;
+    --ring: 216 12.2% 83.9%;
+    --chart-1: 225, 27%, 51%;
+    --chart-2: 31, 100%, 71%;
+    --chart-3: 0, 100%, 67%;
+    --chart-4: 326, 100%, 74%;
+    --chart-5: 135, 94%, 65%;
+    --badge: 0, 0%, 10%;
+    --badge-foreground: 232, 7%, 80%;
+    --scrollbar: 200, 2%, 26%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

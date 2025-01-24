@@ -1,9 +1,24 @@
+
 # Compare Your Code: Benchmark Performance
 
 Compare your performance code with differences test cases
 
 ## About The Project
 This project was created with the idea of comparing different algorithms to solve the same problem and measure their efficiency and implementation.
+
+## Features
+* Language Selection: Choose between JavaScript and TypeScript, with the project designed for scalability to support additional languages in the future.
+* Onside Code Execution: Execute TypeScript and JavaScript code directly within the application using web workers, ensuring optimal performance without affecting the main application thread.
+* Test Cases: Add and execute test cases for both JavaScript and TypeScript to compare their outputs and behavior effectively.
+* Output Display: View the result of your code execution in real time for immediate feedback.
+* Performance Graphs: Compare code execution performance with visualized data, including runtime and operations per second metrics.
+* Resizable Panels: Adjust the panel sizes to suit your preferences and enhance user experience.
+* Responsive Design: Optimized layout for all screen sizes, from mobile to desktop.
+* Dark and Light Modes: Seamlessly switch between dark and light themes based on your preferences.
+
+## Visit the Page
+You can visit the website <a href="comparecode.pages.dev" target="_blank">here</a>
+
 
 ## Getting Started
 
