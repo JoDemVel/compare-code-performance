@@ -5,6 +5,7 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from '@/components/ui/chart';
+import { getColorByPercentage } from '@/utils/colorPercentage';
 
 interface BenchmarkBarProps {
   chartConfig: ChartConfig;
@@ -52,16 +53,22 @@ export const BenchmarkBarChart = ({
               indicator="line"
               formatter={(_value, _name, props) => {
                 const { avg, fill } = props.payload;
+                const { value } = props;
                 return (
-                  <div className="flex items-center gap-5">
-                    <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <span
+                      className="w-1 h-full rounded"
+                      style={{ backgroundColor: fill }}
+                    ></span>
+                    <div className="flex flex-col gap-1 items-start justify-center">
+                      <div className="flex items-center justify-between gap-3">
+                        <p className="font-semibold">Average:</p>
+                        <span>{tooltipFormatter(avg)}</span>
+                      </div>
                       <span
-                        className="w-1 h-3 rounded"
-                        style={{ backgroundColor: fill }}
-                      ></span>
-                      <p className="font-semibold">Average:</p>
+                        className={getColorByPercentage(Number(value))}
+                      >{`${Number(value).toFixed(2)} %`}</span>
                     </div>
-                    <span>{tooltipFormatter(avg)}</span>
                   </div>
                 );
               }}

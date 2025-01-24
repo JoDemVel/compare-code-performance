@@ -19,7 +19,10 @@ export const BenchmarkArea = () => {
   const [selectedMetric, setSelectedMetric] = useState('run-time');
 
   const titlesResults = useMemo(
-    () => (results.length > 0 ? results[0].results.map((output) => output.editorTitle) : []),
+    () =>
+      results.length > 0
+        ? results[0].results.map((output) => output.editorTitle)
+        : [],
     [results]
   );
 
@@ -33,23 +36,28 @@ export const BenchmarkArea = () => {
   }, [titlesResults]);
 
   const data = useMemo(() => {
-    return results.map((result): Record<string, string> => ({
-      'Test Case': `${result.index + 1}-${result.testCase}`,
-      ...result.results.reduce((acc: Record<string, string>, output) => {
-        acc[output.editorTitle] =
-          selectedMetric === 'ops-per-sec'
-            ? String(output.output.opsPerSec)
-            : output.output.runTime.toFixed(3);
-        return acc;
-      }, {}),
-    }));
+    return results.map(
+      (result): Record<string, string> => ({
+        'Test Case': `${result.index + 1}-${result.testCase}`,
+        ...result.results.reduce((acc: Record<string, string>, output) => {
+          acc[output.editorTitle] =
+            selectedMetric === 'ops-per-sec'
+              ? String(output.output.opsPerSec)
+              : output.output.runTime.toFixed(3);
+          return acc;
+        }, {}),
+      })
+    );
   }, [results, selectedMetric]);
 
   const avgData = useMemo(() => {
     if (!data.length) return [];
 
     const averages = titlesResults.map((title) => {
-      const total = data.reduce((sum, item: Record<string, string>) => sum + parseFloat(item[title]), 0);
+      const total = data.reduce(
+        (sum, item: Record<string, string>) => sum + parseFloat(item[title]),
+        0
+      );
       return {
         editor: title,
         avg: parseFloat((total / data.length).toFixed(2)),
@@ -63,7 +71,8 @@ export const BenchmarkArea = () => {
     return averages.map((avg, index) => ({
       ...avg,
       percentage: (avg.avg / max) * 100,
-      invertedPercentage: (averages[averages.length - 1 - index].avg / max) * 100,
+      invertedPercentage:
+        (averages[averages.length - 1 - index].avg / max) * 100,
     }));
   }, [chartConfig, data, titlesResults]);
 
@@ -96,7 +105,9 @@ export const BenchmarkArea = () => {
         />
       </ScrollArea>
       <ScrollArea className="w-[90%]">
-        <h2 className="text-lg font-semibold text-foreground">Average Results</h2>
+        <h2 className="text-lg font-semibold text-foreground">
+          Performance Results
+        </h2>
         <BenchmarkBarChart
           chartConfig={chartConfig}
           avgData={avgData}
