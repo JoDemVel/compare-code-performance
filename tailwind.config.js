@@ -57,6 +57,9 @@ export default {
         scrollbar: {
           DEFAULT: 'hsl(var(--scrollbar))',
         },
+        highlight: {
+          DEFAULT: 'hsl(var(--highlight))',
+        }
       },
     },
   },
