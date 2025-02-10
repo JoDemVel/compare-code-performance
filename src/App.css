@@ -5,6 +5,14 @@
   -webkit-line-clamp: 1;
 }
 
+.title-overflow_block{
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  display: block;
+  max-width: 100%;
+}
+
 .code-field {
   field-sizing: content;
 }
