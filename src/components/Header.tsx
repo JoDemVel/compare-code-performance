@@ -43,13 +43,13 @@ export const Header = () => {
 
   return (
     <header className="flex items-center justify-between gap-0 p-3">
-      <div className="basis-1/3 flex items-center pl-5 gap-5">
+      <div className="basis-1/3 flex items-center pl-5 gap-3">
         <Select
           value={selectedLanguage.id}
           onValueChange={handleLanguageChange}
         >
           <SelectTrigger
-            className={`w-[35%] border-inherit focus:ring-0 ${
+            className={`w-48 max-lg:w-28 max-sm:w-28 border-inherit focus:ring-0 ${
               theme === 'dark' ? 'border-2' : 'border'
             }`}
           >
@@ -58,7 +58,7 @@ export const Header = () => {
           <SelectContent className="bg-card">
             {languages.map(({ id, name, version }) => (
               <SelectItem value={id} key={id}>
-                <div className="w-full flex items-center gap-2">
+                <div className="flex items-center gap-2">
                   <span className="title-overflow_block flex-1">
                     {name}
                     {version && ` - ${version}`}
@@ -81,13 +81,15 @@ export const Header = () => {
             theme === 'dark' ? 'border-2' : 'border'
           }`}
         >
-          <span className="hidden lg:inline">Clear All</span>
+          <span className="hidden xl:inline">Clear All</span>
           <Trash2 />
         </Button>
         {selectedLanguage.id === 'typescript' && (
           <HoverCard openDelay={0}>
             <HoverCardTrigger>
-              <Info />
+              <button className="p-1 rounded-md hover:bg-highlight focus:ring-0 group">
+                <Info />
+              </button>
             </HoverCardTrigger>
             <HoverCardContent className="bg-muted border-dashed border-2 text-sm font-mono w-[370px]">
               <p>
@@ -127,21 +129,26 @@ export const Header = () => {
       <h1 className="hidden md:inline text-center font-semibold justify-center items-center 2xl:text-2xl xl:text-2xl lg:text-xl md:text-xl sm:text-xl text-md">
         Compare Your Code: Benchmark Performance
       </h1>
-      <div className="basis-1/3 flex justify-end items-center pr-5 gap-4">
-        <img
-          src={`https://cdn.simpleicons.org/github/${
-            theme === 'dark' ? 'white' : 'dark'
-          }`}
-          alt={'GitHub Logo'}
-          className="w-6 h-6 hover:cursor-pointer hover:scale-110 transition-transform duration-200"
-          loading="lazy"
+      <div className="basis-1/3 flex justify-end items-center pr-5 gap-1">
+        <button
           onClick={() =>
             window.open(
               'https://github.com/JoDemVel/compare-code-performance',
               '_blank'
             )
           }
-        />
+          className="hidden sm:inline p-2 rounded-md hover:bg-highlight focus:ring-0 group"
+        >
+          <img
+            src={`https://cdn.simpleicons.org/github/${
+              theme === 'dark' ? 'white' : 'dark'
+            }`}
+            alt={'GitHub Logo'}
+            className="w-5 h-5 hover:cursor-pointer group-hover:scale-110 transition-transform duration-200"
+            loading="lazy"
+          />
+        </button>
+
         <ModeToggle />
       </div>
     </header>
