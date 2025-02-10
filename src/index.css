@@ -41,6 +41,7 @@
     --badge: 207, 4%, 50%;
     --badge-foreground: 232, 7%, 90%;
     --scrollbar: 0, 0%, 77%;
+    --highlight: 0, 0%, 88%;
   }
   .dark {
     --background: 232, 8%, 20%;
@@ -70,6 +71,7 @@
     --badge: 0, 0%, 10%;
     --badge-foreground: 232, 7%, 80%;
     --scrollbar: 200, 2%, 26%;
+    --highlight: 232, 8%, 28%;
   }
 }
 
