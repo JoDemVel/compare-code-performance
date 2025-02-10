@@ -42,14 +42,14 @@ export const Header = () => {
   };
 
   return (
-    <header className="grid grid-cols-7 gap-4 p-3">
-      <div className="col-span-2 flex items-center pl-5 gap-4">
+    <header className="flex items-center justify-between gap-0 p-3">
+      <div className="basis-1/3 flex items-center pl-5 gap-5">
         <Select
           value={selectedLanguage.id}
           onValueChange={handleLanguageChange}
         >
           <SelectTrigger
-            className={`w-[50%] border-inherit focus:ring-0 ${
+            className={`w-[35%] border-inherit focus:ring-0 ${
               theme === 'dark' ? 'border-2' : 'border'
             }`}
           >
@@ -58,8 +58,8 @@ export const Header = () => {
           <SelectContent className="bg-card">
             {languages.map(({ id, name, version }) => (
               <SelectItem value={id} key={id}>
-                <div className="w-full flex items-center">
-                  <span className="mr-3 title-overflow">
+                <div className="w-full flex items-center gap-2">
+                  <span className="title-overflow_block flex-1">
                     {name}
                     {version && ` - ${version}`}
                   </span>
@@ -81,7 +81,7 @@ export const Header = () => {
             theme === 'dark' ? 'border-2' : 'border'
           }`}
         >
-          Clear All
+          <span className="hidden lg:inline">Clear All</span>
           <Trash2 />
         </Button>
         {selectedLanguage.id === 'typescript' && (
@@ -89,7 +89,7 @@ export const Header = () => {
             <HoverCardTrigger>
               <Info />
             </HoverCardTrigger>
-            <HoverCardContent className="bg-muted border-dashed border-2 text-sm font-mono w-[500px]">
+            <HoverCardContent className="bg-muted border-dashed border-2 text-sm font-mono w-[370px]">
               <p>
                 Monaco Editor uses a shared context for the JavaScript and
                 TypeScript language models across each editor instance. As a
@@ -124,10 +124,10 @@ export const Header = () => {
           </HoverCard>
         )}
       </div>
-      <h1 className="col-span-3 text-center font-semibold flex justify-center items-center 2xl:text-2xl xl:text-2xl lg:text-2xl md:text-2xl sm:text-xl text-md">
+      <h1 className="hidden md:inline text-center font-semibold justify-center items-center 2xl:text-2xl xl:text-2xl lg:text-xl md:text-xl sm:text-xl text-md">
         Compare Your Code: Benchmark Performance
       </h1>
-      <div className="col-span-2 flex justify-end items-center pr-5 gap-4">
+      <div className="basis-1/3 flex justify-end items-center pr-5 gap-4">
         <img
           src={`https://cdn.simpleicons.org/github/${
             theme === 'dark' ? 'white' : 'dark'
