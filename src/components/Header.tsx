@@ -64,7 +64,7 @@ export const Header = () => {
                     {version && ` - ${version}`}
                   </span>
                   <img
-                    src={`./${id}.svg`}
+                    src={`./languages-icons/${id}.svg`}
                     alt={name}
                     className="w-5 h-5"
                     loading="lazy"
