@@ -21,7 +21,7 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
   );
   const codeHandler: CodeHandler = useMemo(() => factory.createHandler(), [factory]);
   const { dataTestCases, setDataTestCases } = useTestCasesStore();
-  const { selectedLanguage } = useLanguagesStore();
+  const { selectedLanguage, languages } = useLanguagesStore();
   const { editorsProperties, clearToggled, saveCode, saveToggled } =
     useEditorsPropertiesStore();
   const { setResults, setIsLoading } = useResultStore();
@@ -155,10 +155,12 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
       })
       .every((value) => value);
     if (isEmpty && testCases.length === 0) {
-      const defaultData = getDefaultRandomCodes(selectedLanguage.id);
-      saveCode('editor1', selectedLanguage.id, defaultData.selectedCodes[0]);
-      saveCode('editor2', selectedLanguage.id, defaultData.selectedCodes[1]);
-      setDataTestCases(selectedLanguage.id, defaultData.testCases);
+      languages.forEach((language) => {
+        const dataCode = getDefaultRandomCodes(language.id);
+        saveCode('editor1', language.id, dataCode.selectedCodes[0]);
+        saveCode('editor2', language.id, dataCode.selectedCodes[1]);
+        setDataTestCases(language.id, dataCode.testCases);
+      });
     }
     if (firstEditorRef.current && secondEditorRef.current) {
       firstEditorRef.current.setValue(getCode('editor1'));
