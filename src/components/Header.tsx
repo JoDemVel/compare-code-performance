@@ -77,7 +77,7 @@ export const Header = () => {
         <Button
           variant="ghost"
           onClick={handleClear}
-          className={`hover:bg-muted font-normal ${
+          className={`hover:bg-highlight font-normal ${
             theme === 'dark' ? 'border-2' : 'border'
           }`}
         >
