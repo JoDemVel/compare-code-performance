@@ -3,6 +3,7 @@ export interface Input {
   testCase: string;
   language: string;
   version?: string;
+  fileExtension?: string;
 }
 
 export interface Output {

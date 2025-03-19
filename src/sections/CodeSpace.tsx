@@ -42,6 +42,7 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
           language: selectedLanguage.id,
           version: selectedLanguage.version,
           testCase: testCase.testCase,
+          fileExtension: selectedLanguage.fileExtension,
         });
 
         const outputEditor2 = await codeHandler.handleCode({
@@ -49,6 +50,7 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
           language: selectedLanguage.id,
           version: selectedLanguage.version,
           testCase: testCase.testCase,
+          fileExtension: selectedLanguage.fileExtension,
         });
 
         console.log(outputEditor1, outputEditor2);
