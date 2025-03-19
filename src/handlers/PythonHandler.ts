@@ -22,7 +22,7 @@ export class PythonHandler extends CodeHandler {
   async runTest(input: Input): Promise<Output> {
     let code = this.addRunTimeCalc(input.code, input.testCase);
     code = this.addOpsPerSecCalc(code, input.testCase);
-    code = this.addOutput(code);
+    code = this.addOutputFormat(code);
     return this.runExternal(code, input.language, input.version!);
   }
 
@@ -104,7 +104,7 @@ export class PythonHandler extends CodeHandler {
     ].join("\n");
   }
 
-  private addOutput(code: string): string {
+  private addOutputFormat(code: string): string {
     return [
       "import json",
       code,
