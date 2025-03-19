@@ -17,6 +17,10 @@ export const useEditorsPropertiesStore = create(
             {
               languageId: "typescript",
               code: ''
+            },
+            {
+              languageId: "python",
+              code: ''
             }
           ],
         },
@@ -30,6 +34,10 @@ export const useEditorsPropertiesStore = create(
             },
             {
               languageId: "typescript",
+              code: ''
+            },
+            {
+              languageId: "python",
               code: ''
             }
           ],

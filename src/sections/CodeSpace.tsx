@@ -40,14 +40,20 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
         const outputEditor1 = await codeHandler.handleCode({
           code: codeEditor1,
           language: selectedLanguage.id,
+          version: selectedLanguage.version,
           testCase: testCase.testCase,
+          fileExtension: selectedLanguage.fileExtension,
         });
 
         const outputEditor2 = await codeHandler.handleCode({
           code: codeEditor2,
           language: selectedLanguage.id,
+          version: selectedLanguage.version,
           testCase: testCase.testCase,
+          fileExtension: selectedLanguage.fileExtension,
         });
+
+        console.log(outputEditor1, outputEditor2);
 
         return [
           {
@@ -174,6 +180,7 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
       <PanelGroup direction="horizontal">
         <Panel defaultSize={50} minSize={20}>
           <Editor
+            key={`${selectedLanguage.id}-editor1`}
             handleRun={handleRun}
             ref={firstEditorRef}
             idEditor="editor1"
@@ -186,6 +193,7 @@ export const CodeSpace = ({ factory }: { factory: HandlerFactory }) => {
 
         <Panel defaultSize={50} minSize={20}>
           <Editor
+            key={`${selectedLanguage.id}-editor2`}
             handleRun={handleRun}
             ref={secondEditorRef}
             idEditor="editor2"

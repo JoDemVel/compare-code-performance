@@ -15,6 +15,10 @@ export const useTestCasesStore = create(
             languageId: 'typescript',
             testCases: [] as TestCase[],
           },
+          {
+            languageId: 'python',
+            testCases: [] as TestCase[],
+          }
         ]
       },
       (set) => ({
@@ -66,6 +70,8 @@ export const useTestCasesStore = create(
           })),
       })
     ),
-    { name: 'test-cases' }
+    { 
+      name: 'test-cases',
+    }
   )
 );  

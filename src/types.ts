@@ -2,6 +2,8 @@ export interface Input {
   code: string;
   testCase: string;
   language: string;
+  version?: string;
+  fileExtension?: string;
 }
 
 export interface Output {
@@ -46,4 +48,18 @@ export interface Result {
   testCaseId: string;
   testCase: string;
   results: UnitResult[];
+}
+
+interface PistonRunResult {
+  code: number;
+  output: string;
+  signal: string | null;
+  stderr: string;
+  stdout: string;
+}
+
+export interface PistonResult {
+  language: string;
+  run: PistonRunResult;
+  version: string;
 }

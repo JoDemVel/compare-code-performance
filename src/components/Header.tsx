@@ -110,10 +110,6 @@ export const Header = () => {
                 <code className="text-green-600 bg-card border p-2 rounded-md">
                   // @ts-ignore
                 </code>
-                <span>or</span>
-                <code className="text-green-600 bg-card border p-2 rounded-md">
-                  // @ts-expect-error
-                </code>
               </pre>
               <p>
                 You can also disable all rules by placing the following comment
