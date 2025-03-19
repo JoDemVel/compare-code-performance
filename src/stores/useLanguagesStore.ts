@@ -21,6 +21,13 @@ export const useLanguagesStore = create(
             tabSize: 2,
             fileExtension: 'ts',
           },
+          {
+            id: 'python',
+            name: 'Python',
+            version: '3.10.0',
+            tabSize: 4,
+            fileExtension: 'py',
+          }
         ] as Language[],
         selectedLanguage: {
           id: 'javascript',

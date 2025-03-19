@@ -1,11 +1,4 @@
-import {
-  forwardRef,
-  useCallback,
-  useEffect,
-  useRef,
-  useState,
-  useMemo,
-} from 'react';
+import { forwardRef, useCallback, useEffect, useRef, useState } from 'react';
 import { Editor as MonacoEditor, OnMount } from '@monaco-editor/react';
 import * as monaco from 'monaco-editor';
 import { Title } from '@/components/Title';
@@ -84,26 +77,22 @@ export const Editor = forwardRef<
     [handleRun, toggleSave, ref]
   );
 
-  const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions =
-    useMemo(
-      () => ({
-        tabSize: language.tabSize,
-        minimap: { enabled: false },
-        wordWrap: 'on',
-        overviewRulerBorder: false,
-        hideCursorInOverviewRuler: true,
-        scrollbar: {
-          vertical: 'auto',
-          horizontal: 'auto',
-          verticalScrollbarSize: 15,
-          verticalSliderSize: 7,
-          horizontalScrollbarSize: 15,
-          horizontalSliderSize: 7,
-        },
-        fixedOverflowWidgets: true,
-      }),
-      [language.tabSize]
-    );
+  const editorOptions: monaco.editor.IStandaloneEditorConstructionOptions = {
+    tabSize: language.tabSize,
+    minimap: { enabled: false },
+    wordWrap: 'on',
+    overviewRulerBorder: false,
+    hideCursorInOverviewRuler: true,
+    scrollbar: {
+      vertical: 'auto',
+      horizontal: 'auto',
+      verticalScrollbarSize: 15,
+      verticalSliderSize: 7,
+      horizontalScrollbarSize: 15,
+      horizontalSliderSize: 7,
+    },
+    fixedOverflowWidgets: true,
+  };
 
   const beforeMount = (monacoInstance: typeof monaco) => {
     monacoInstance.editor.defineTheme(
